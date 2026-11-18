@@ -1,0 +1,2508 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Grimório 5.5 — Ficha Virtual D&D (Regras 2024)</title>
+
+    <!-- Fontes Google (Opcional - fallback nativo garantido offline) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (Opcional - CSS autossuficiente completo abaixo garante funcionamento 100% offline/iOS Quick Look) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) {
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                            display: ['Cinzel', 'Georgia', 'serif'],
+                        },
+                        colors: {
+                            obsidian: 'var(--bg-main)',
+                            slatepanel: 'var(--bg-panel)',
+                            slatecard: 'var(--bg-card)',
+                            amber: {
+                                200: 'rgb(var(--accent-200) / <alpha-value>)',
+                                300: 'rgb(var(--accent-300) / <alpha-value>)',
+                                400: 'rgb(var(--accent-400) / <alpha-value>)',
+                                500: 'rgb(var(--accent-500) / <alpha-value>)',
+                                600: 'rgb(var(--accent-600) / <alpha-value>)',
+                                700: 'rgb(var(--accent-700) / <alpha-value>)',
+                                900: 'rgb(var(--accent-900) / <alpha-value>)',
+                            }
+                        }
+                    }
+                }
+            };
+        }
+    </script>
+
+    <style>
+        /* ==========================================================================
+           1. VARIÁVEIS DE TEMA E PALETAS CROMÁTICAS (DARK OBSIDIANA & LIGHT PERGAMINHO)
+           ========================================================================== */
+        :root {
+            --bg-main: #0b0d12;
+            --bg-panel: #131722;
+            --bg-card: #1a202e;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-subtle: rgba(148, 163, 184, 0.22);
+            --border-strong: rgba(148, 163, 184, 0.38);
+
+            /* Tema Padrão: Ouro Lathander */
+            --accent-200: 253 230 138;
+            --accent-300: 252 211 77;
+            --accent-400: 251 191 36;
+            --accent-500: 245 158 11;
+            --accent-600: 217 119 6;
+            --accent-700: 180 83 9;
+            --accent-900: 120 53 15;
+        }
+
+        html.light-theme {
+            --bg-main: #f3ede0;
+            --bg-panel: #fbf8f1;
+            --bg-card: #efe7d6;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #475569;
+            --border-subtle: rgba(120, 102, 74, 0.32);
+            --border-strong: rgba(120, 102, 74, 0.52);
+        }
+
+        /* ==========================================================================
+           2. RESET & CSS AUTOSSUFICIENTE (FUNCIONA 100% SEM INTERNET E NO iOS QUICK LOOK)
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.45;
+            -webkit-text-size-adjust: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            min-height: 100vh;
+            padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .font-display {
+            font-family: 'Cinzel', Georgia, 'Times New Roman', serif;
+        }
+
+        /* Utilitários estruturais autossuficientes */
+        .flex { display: flex; }
+        .inline-flex { display: inline-flex; }
+        .grid { display: grid; }
+        .block { display: block; }
+        .inline-block { display: inline-block; }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .items-end { align-items: flex-end; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .justify-end { justify-content: flex-end; }
+        .flex-col { flex-direction: column; }
+        .flex-wrap { flex-wrap: wrap; }
+        .flex-1 { flex: 1 1 0%; }
+        .shrink-0 { flex-shrink: 0; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .fixed { position: fixed; }
+        .sticky { position: sticky; }
+        .inset-0 { inset: 0; }
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .uppercase { text-transform: uppercase; }
+        .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .overflow-hidden { overflow: hidden; }
+        .overflow-x-auto { overflow-x: auto; }
+        .overflow-y-auto { overflow-y: auto; }
+
+        .gap-1 { gap: 0.25rem; }
+        .gap-1\.5 { gap: 0.375rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-2\.5 { gap: 0.625rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+
+        .space-y-1 > * + * { margin-top: 0.25rem; }
+        .space-y-1\.5 > * + * { margin-top: 0.375rem; }
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-5 > * + * { margin-top: 1.25rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+        .grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+
+        .p-1 { padding: 0.25rem; }
+        .p-1\.5 { padding: 0.375rem; }
+        .p-2 { padding: 0.5rem; }
+        .p-2\.5 { padding: 0.625rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .px-2\.5 { padding-left: 0.625rem; padding-right: 0.625rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-3\.5 { padding-left: 0.875rem; padding-right: 0.875rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+        .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-2\.5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .py-3\.5 { padding-top: 0.875rem; padding-bottom: 0.875rem; }
+
+        .rounded { border-radius: 0.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .rounded-2xl { border-radius: 1rem; }
+        .rounded-3xl { border-radius: 1.5rem; }
+        .rounded-full { border-radius: 9999px; }
+
+        .text-\[10px\] { font-size: 10px; }
+        .text-\[11px\] { font-size: 11px; }
+        .text-xs { font-size: 0.75rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-base { font-size: 1rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-4xl { font-size: 2.25rem; }
+
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        .font-extrabold { font-weight: 800; }
+
+        /* Superfícies & Cores */
+        .bg-obsidian { background-color: var(--bg-main); }
+        .bg-slatepanel, .bg-slatepanel\/95 { background-color: var(--bg-panel); }
+        .bg-slatecard, .bg-slatecard\/90, .bg-slatecard\/80, .bg-slatecard\/60, .bg-slatecard\/50 { background-color: var(--bg-card); }
+        .text-white { color: #ffffff; }
+        .text-slate-100, .text-slate-200 { color: var(--text-primary); }
+        .text-slate-300 { color: var(--text-secondary); }
+        .text-slate-400, .text-slate-500 { color: var(--text-muted); }
+        .text-amber-400, .text-amber-300 { color: rgb(var(--accent-400)); }
+        .text-emerald-400, .text-emerald-300 { color: #34d399; }
+        .text-red-400, .text-red-300 { color: #f87171; }
+        .text-sky-400, .text-sky-300 { color: #38bdf8; }
+
+        .arcane-border {
+            border: 1px solid rgb(var(--accent-500) / 0.28);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.55);
+        }
+
+        /* Ajustes de Alto Contraste no Modo Claro (Alvorada de Lathander) */
+        html.light-theme .arcane-border {
+            border: 1px solid rgb(var(--accent-700) / 0.38);
+            box-shadow: 0 4px 18px -2px rgba(71, 55, 30, 0.14);
+        }
+        html.light-theme .text-white { color: #0f172a !important; }
+        html.light-theme .text-amber-400,
+        html.light-theme .text-amber-400\/80 { color: rgb(var(--accent-700)) !important; }
+        html.light-theme .text-amber-300 { color: rgb(var(--accent-900)) !important; }
+        html.light-theme .text-emerald-400,
+        html.light-theme .text-emerald-300 { color: #047857 !important; }
+        html.light-theme .bg-emerald-950\/50,
+        html.light-theme .bg-emerald-950\/70 {
+            background-color: #d1fae5 !important;
+            border-color: #059669 !important;
+        }
+        html.light-theme .text-red-400,
+        html.light-theme .text-red-300 { color: #b91c1c !important; }
+        html.light-theme .bg-red-950\/40,
+        html.light-theme .bg-red-950\/70,
+        html.light-theme .bg-red-950 {
+            background-color: #fee2e2 !important;
+            border-color: #dc2626 !important;
+        }
+        html.light-theme .text-sky-400,
+        html.light-theme .text-sky-300 { color: #0369a1 !important; }
+        html.light-theme .bg-amber-600.text-white,
+        html.light-theme .bg-red-600.text-white,
+        html.light-theme #diceOverlayNumber.text-white { color: #ffffff !important; }
+        html.light-theme ::placeholder { color: #78716c !important; opacity: 1; }
+
+        /* Inputs, Selects e Botões otimizados para Toque e iOS Safari (>=16px no mobile evita zoom) */
+        input, select, textarea {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-strong);
+            border-radius: 0.6rem;
+            font-family: inherit;
+            font-size: 16px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: rgb(var(--accent-500));
+            box-shadow: 0 0 0 2px rgb(var(--accent-500) / 0.2);
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        input[type="checkbox"] {
+            width: 1.1rem;
+            height: 1.1rem;
+            accent-color: rgb(var(--accent-500));
+            cursor: pointer;
+        }
+
+        button {
+            cursor: pointer;
+            font-family: inherit;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .roll-btn {
+            background-color: var(--bg-card);
+            border: 1px solid rgb(var(--accent-500) / 0.45);
+            transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease;
+        }
+        .roll-btn:hover {
+            border-color: rgb(var(--accent-400));
+            background-color: rgb(var(--accent-500) / 0.15);
+        }
+        .roll-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Header e Container Principal */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background-color: var(--bg-panel);
+            border-bottom: 1px solid rgb(var(--accent-500) / 0.25);
+        }
+        .container-app {
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0.75rem 1rem;
+        }
+
+        /* Modais (Rolagem de Dados & Confirmação) */
+        #diceRollOverlay, #confirmModal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 60;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        #diceOverlayCard, #confirmCard {
+            background-color: var(--bg-panel);
+            max-width: 22rem;
+            width: 100%;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            position: relative;
+        }
+        #diceOverlaySvg {
+            width: 7.5rem;
+            height: 7.5rem;
+            margin: 0 auto;
+            display: block;
+        }
+        #diceOverlayNumber {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.35rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        /* Toast Flutuante */
+        #toastContainer {
+            position: fixed;
+            top: 4.5rem;
+            right: 1rem;
+            left: 1rem;
+            z-index: 70;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+
+        /* Gaveta Flutuante de Dados */
+        #diceWidgetWrapper {
+            position: fixed;
+            bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+            right: 0.75rem;
+            left: 0.75rem;
+            z-index: 45;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            pointer-events: none;
+        }
+        #diceDrawer {
+            pointer-events: auto;
+            width: 100%;
+            max-width: 23.5rem;
+            background-color: var(--bg-panel);
+            border-radius: 1.25rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        #desktopDiceFab {
+            pointer-events: auto;
+            display: none;
+        }
+
+        /* Barra Inferior Fixa Mobile (< 768px) */
+        #mobileBottomNav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: var(--bg-panel);
+            border-top: 1px solid rgb(var(--accent-500) / 0.35);
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            padding: 0.35rem 0.25rem calc(0.35rem + env(safe-area-inset-bottom, 0px));
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Responsividade Desktop (>= 768px) */
+        @media (min-width: 768px) {
+            body {
+                padding-bottom: 5rem;
+            }
+            input, select, textarea {
+                font-size: 0.875rem;
+            }
+            #mobileBottomNav {
+                display: none !important;
+            }
+            #diceWidgetWrapper {
+                bottom: 1.25rem;
+                right: 1.25rem;
+                left: auto;
+            }
+            #desktopDiceFab {
+                display: inline-flex;
+            }
+            .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .md\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+            .md\:col-span-5 { grid-column: span 5 / span 5; }
+            .md\:col-span-7 { grid-column: span 7 / span 7; }
+        }
+
+        @media (min-width: 1024px) {
+            .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .lg\:grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+            .lg\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+            .lg\:col-span-4 { grid-column: span 4 / span 4; }
+            .lg\:col-span-8 { grid-column: span 8 / span 8; }
+        }
+
+        /* Animações */
+        @keyframes diceSpin3D {
+            0% { transform: rotate(0deg) scale(0.75); }
+            25% { transform: rotate(135deg) scale(1.15); }
+            50% { transform: rotate(270deg) scale(0.95); }
+            75% { transform: rotate(405deg) scale(1.1); }
+            100% { transform: rotate(540deg) scale(1); }
+        }
+        @keyframes critPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.85)); }
+            50% { transform: scale(1.08); filter: drop-shadow(0 0 28px rgba(251, 191, 36, 1)); }
+        }
+        @keyframes fumbleShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px) rotate(-3deg); }
+            40%, 80% { transform: translateX(8px) rotate(3deg); }
+        }
+        .animate-dice-roll { animation: diceSpin3D 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        .animate-crit { animation: critPulse 1.2s infinite ease-in-out; }
+        .animate-fumble { animation: fumbleShake 0.45s ease-in-out; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 9999px; }
+    </style>
+</head>
+<body class="bg-obsidian text-slate-200 antialiased">
+
+    <!-- Container de Notificações Toast -->
+    <div id="toastContainer"></div>
+
+    <!-- MODAL CENTRAL: ANIMAÇÃO DE ROLAGEM DE DADOS -->
+    <div id="diceRollOverlay" onclick="closeDiceOverlay()" class="hidden">
+        <div id="diceOverlayCard" onclick="event.stopPropagation()" class="arcane-border text-center shadow-2xl">
+            <span id="diceOverlayModeBadge" class="inline-block px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-slatecard text-slate-400 mb-2" style="border: 1px solid var(--border-strong);">
+                Rolagem Normal
+            </span>
+            <h3 id="diceOverlayLabel" class="font-display font-bold text-lg text-amber-400 mb-3 truncate">Teste de Atributo</h3>
+
+            <!-- Dado Poliedro SVG Animado -->
+            <div class="relative mx-auto my-2 flex items-center justify-center" style="width: 7.5rem; height: 7.5rem;">
+                <svg id="diceOverlaySvg" viewBox="0 0 100 100" class="text-amber-400">
+                    <polygon points="50,4 93,28 93,72 50,96 7,72 7,28" fill="#1a202e" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/>
+                    <polygon points="50,4 78,34 22,34" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.45"/>
+                    <polygon points="50,96 78,66 22,66" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.45"/>
+                    <polygon points="22,34 78,34 78,66 22,66" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.35"/>
+                    <line x1="7" y1="28" x2="22" y2="34" stroke="currentColor" stroke-width="1.5" opacity="0.45"/>
+                    <line x1="93" y1="28" x2="78" y2="34" stroke="currentColor" stroke-width="1.5" opacity="0.45"/>
+                    <line x1="7" y1="72" x2="22" y2="66" stroke="currentColor" stroke-width="1.5" opacity="0.45"/>
+                    <line x1="93" y1="72" x2="78" y2="66" stroke="currentColor" stroke-width="1.5" opacity="0.45"/>
+                </svg>
+                <span id="diceOverlayNumber" class="font-display">20</span>
+            </div>
+
+            <!-- Banner Crítico / Falha -->
+            <div id="diceOverlayCritBanner" class="hidden text-xs font-display font-extrabold uppercase tracking-widest py-1 px-3 rounded-lg mx-auto mt-2"></div>
+
+            <!-- Fórmula Detalhada -->
+            <p id="diceOverlayFormula" class="text-xs text-slate-300 font-medium mt-3 bg-slatecard rounded-xl py-2 px-3" style="border: 1px solid var(--border-subtle);">
+                d20 (15) + 3 = 18
+            </p>
+
+            <button type="button" onclick="closeDiceOverlay()" class="mt-4 px-4 py-1.5 rounded-lg bg-slatecard text-[11px] text-slate-400 hover:text-amber-400 uppercase tracking-wider font-semibold">
+                Toque para fechar
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO CUSTOMIZADO -->
+    <div id="confirmModal" class="hidden">
+        <div id="confirmCard" class="arcane-border shadow-2xl">
+            <h3 id="confirmTitle" class="font-display text-xl text-amber-400 font-bold mb-2">Confirmar Ação</h3>
+            <p id="confirmMessage" class="text-slate-300 text-sm mb-6">Tem certeza que deseja continuar?</p>
+            <div class="flex justify-end gap-3">
+                <button type="button" id="confirmCancelBtn" class="px-4 py-2 rounded-lg bg-slatecard text-slate-300 text-sm font-medium" style="border: 1px solid var(--border-strong);">Cancelar</button>
+                <button type="button" id="confirmOkBtn" class="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CABEÇALHO SUPERIOR -->
+    <header>
+        <div class="container-app flex flex-col gap-2.5">
+            <!-- Linha 1: Logo + Tema Mitológico + Paleta de Cor + Som Bárdico + Auto-save -->
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <div class="rounded-lg flex items-center justify-center font-display font-extrabold text-sm"
+                        style="width: 2.15rem; height: 2.15rem; background: linear-gradient(135deg, rgb(var(--accent-500)), rgb(var(--accent-700))); color: #0b0d12;">
+                        5.5
+                    </div>
+                    <div>
+                        <h1 class="font-display font-bold text-base sm:text-lg tracking-wider text-amber-400 leading-none m-0">GRIMÓRIO 5.5</h1>
+                        <span class="text-[10px] text-slate-400 tracking-widest uppercase block">D&D Regras 2024</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                    <!-- Botão Modo Claro/Escuro Mitológico (Selûne / Lathander) -->
+                    <button type="button" id="themeModeBtn" onclick="toggleThemeMode()" title="Alternar entre Noite de Selûne (Escuro) e Alvorada de Lathander (Claro)"
+                        class="p-2 rounded-lg bg-slatecard text-amber-400 flex items-center gap-1.5 text-xs font-semibold" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
+                        <span id="mythicThemeIcon" class="flex items-center justify-center"></span>
+                        <span id="mythicThemeLabel" class="hidden sm:inline">Selûne</span>
+                    </button>
+
+                    <!-- Seletor de Cor Principal -->
+                    <div class="relative">
+                        <button type="button" id="accentPickerBtn" onclick="toggleAccentMenu()" title="Escolher Cor Principal da Ficha"
+                            class="p-2 rounded-lg bg-slatecard text-amber-400 flex items-center gap-1.5 text-xs font-semibold" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
+                            <span id="activeColorDot" class="rounded-full inline-block" style="width: 0.85rem; height: 0.85rem; background-color: rgb(var(--accent-500)); border: 1px solid rgba(255,255,255,0.45);"></span>
+                            <span class="hidden sm:inline">Cor</span>
+                        </button>
+                        <div id="accentPickerMenu" class="hidden absolute right-0 mt-2 bg-slatepanel arcane-border rounded-2xl p-3 shadow-2xl z-50" style="width: 14.5rem;">
+                            <div class="text-[11px] font-display font-bold uppercase tracking-wider text-amber-400 mb-2">Essência Cromática</div>
+                            <div id="accentSwatchesGrid" class="grid grid-cols-2 gap-1.5"></div>
+                        </div>
+                    </div>
+
+                    <!-- Botão de Áudio Bárdico -->
+                    <button type="button" id="soundToggleBtn" onclick="toggleAudio()" title="Ativar/Desativar Áudio Bárdico"
+                        class="p-2 rounded-lg bg-slatecard text-amber-400 flex items-center gap-1.5 text-xs font-semibold" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
+                        <span id="soundIconSpan">🔊</span>
+                        <span id="soundLabelSpan" class="hidden md:inline">Som</span>
+                    </button>
+
+                    <!-- Indicador de Auto-Save -->
+                    <div id="saveIndicator" class="flex items-center gap-1 text-[11px] text-emerald-400 bg-emerald-950/50 px-2 py-1.5 rounded-lg" style="border: 1px solid rgba(16, 185, 129, 0.3);">
+                        <span>✓</span>
+                        <span class="hidden sm:inline">Salvo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Linha 2: Seletor de Personagens & Backup JSON -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1.5" style="border-top: 1px solid var(--border-subtle);">
+                <select id="characterSelect" aria-label="Selecionar Personagem" class="flex-1 bg-slatecard text-slate-100 text-sm rounded-lg px-2.5 py-1.5" style="min-width: 145px;">
+                </select>
+
+                <div class="flex items-center gap-1.5">
+                    <button type="button" onclick="createNewCharacter()" title="Nova Ficha em Branco"
+                        class="px-2.5 py-1.5 rounded-lg text-amber-400 text-xs font-semibold flex items-center gap-1" style="background-color: rgb(var(--accent-500) / 0.16); border: 1px solid rgb(var(--accent-500) / 0.35);">
+                        <span>+</span><span>Nova</span>
+                    </button>
+
+                    <button type="button" onclick="exportCharacterJSON()" title="Exportar Backup JSON"
+                        class="px-2.5 py-1.5 rounded-lg bg-slatecard text-slate-300 text-xs font-medium flex items-center gap-1" style="border: 1px solid var(--border-strong);">
+                        <span class="text-amber-400">↓</span><span>Exportar</span>
+                    </button>
+
+                    <label title="Importar Backup JSON"
+                        class="px-2.5 py-1.5 rounded-lg bg-slatecard text-slate-300 text-xs font-medium flex items-center gap-1 cursor-pointer" style="border: 1px solid var(--border-strong);">
+                        <span class="text-amber-400">↑</span><span>Importar</span>
+                        <input type="file" id="importJsonInput" accept=".json" class="hidden" onchange="importCharacterJSON(event)">
+                    </label>
+
+                    <button type="button" onclick="requestDeleteCharacter()" title="Excluir Ficha Atual"
+                        class="px-2.5 py-1.5 rounded-lg bg-red-950/40 text-red-400 text-xs font-bold" style="border: 1px solid rgba(239, 68, 68, 0.3);">
+                        🗑
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="container-app space-y-5">
+
+        <!-- SEÇÃO 1: IDENTIDADE DO PERSONAGEM (D&D 5.5 / 2024) -->
+        <section class="bg-slatepanel arcane-border rounded-2xl p-4">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                <!-- Nome & Inspiração Heroica -->
+                <div class="lg:col-span-4 space-y-2.5">
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-amber-400 mb-1">Nome do Personagem</label>
+                        <input type="text" data-field="name" class="w-full px-3 py-2 text-base font-display font-bold" placeholder="Nome do seu herói...">
+                    </div>
+                    <div class="flex items-center justify-between bg-slatecard rounded-xl px-3 py-2" style="border: 1px solid var(--border-subtle);">
+                        <span class="text-xs font-semibold text-slate-200">✨ Inspiração Heroica</span>
+                        <button type="button" id="inspirationBtn" onclick="toggleInspiration()"
+                            class="rounded-full relative transition" style="width: 2.75rem; height: 1.5rem; background-color: #334155;">
+                            <span id="inspirationDot" class="block rounded-full bg-white transition" style="width: 1rem; height: 1rem; transform: translateX(0.25rem);"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Classe, Espécie, Antecedente, Talento de Origem e Nível -->
+                <div class="lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-2.5">
+                    <div>
+                        <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Classe</label>
+                        <input type="text" data-field="charClass" class="w-full px-2.5 py-1.5 text-sm" placeholder="Ex: Guerreiro">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Subclasse</label>
+                        <input type="text" data-field="subclass" class="w-full px-2.5 py-1.5 text-sm" placeholder="Ex: Campeão">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Espécie (2024)</label>
+                        <input type="text" data-field="species" class="w-full px-2.5 py-1.5 text-sm" placeholder="Ex: Humano, Elfo">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Antecedente</label>
+                        <input type="text" data-field="background" class="w-full px-2.5 py-1.5 text-sm" placeholder="Ex: Soldado">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Talento de Origem</label>
+                        <input type="text" data-field="originFeat" class="w-full px-2.5 py-1.5 text-sm" placeholder="Ex: Alerta, Sortudo">
+                    </div>
+                    <div class="grid grid-cols-3 gap-1.5">
+                        <div>
+                            <label class="block text-[10px] font-semibold uppercase text-slate-400 mb-1">Nível</label>
+                            <input type="number" min="1" max="20" data-field="level" class="w-full px-1 py-1.5 text-center font-bold text-amber-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold uppercase text-slate-400 mb-1">Prof.</label>
+                            <div id="profBonusDisplay" class="w-full rounded-lg py-1.5 text-sm text-center font-bold text-amber-400" style="background-color: rgb(var(--accent-500) / 0.14); border: 1px solid rgb(var(--accent-500) / 0.35);">+2</div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold uppercase text-slate-400 mb-1">XP</label>
+                            <input type="number" min="0" data-field="xp" class="w-full px-1 py-1.5 text-center text-xs">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 2: COMBATE & PONTOS DE VIDA -->
+        <section class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <!-- CA, Iniciativa, Deslocamento e Percepção Passiva -->
+            <div class="md:col-span-5 grid grid-cols-2 gap-3">
+                <!-- Classe de Armadura -->
+                <div class="bg-slatepanel arcane-border rounded-2xl p-3 flex flex-col items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">🛡 Classe Armadura</span>
+                    <input type="number" data-field="ac" class="w-20 text-center text-2xl font-display font-extrabold my-1" style="background: transparent; border: none;">
+                    <label class="flex items-center gap-1.5 text-xs text-slate-300 bg-slatecard px-2.5 py-1 rounded-lg cursor-pointer" style="border: 1px solid var(--border-subtle);">
+                        <input type="checkbox" data-field="hasShield">
+                        <span>Escudo (+2)</span>
+                    </label>
+                </div>
+
+                <!-- Iniciativa -->
+                <div class="bg-slatepanel arcane-border rounded-2xl p-3 flex flex-col items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">⚡ Iniciativa</span>
+                    <button type="button" onclick="rollInitiative()" class="roll-btn px-4 py-1 rounded-xl text-2xl font-display font-extrabold text-amber-400 my-1" title="Rolar Iniciativa">
+                        <span id="initiativeDisplay">+0</span>
+                    </button>
+                    <div class="flex items-center gap-1 text-[11px] text-slate-400">
+                        <span>Extra:</span>
+                        <input type="number" data-field="initBonus" class="w-12 text-center py-0.5 text-xs">
+                    </div>
+                </div>
+
+                <!-- Deslocamento -->
+                <div class="bg-slatepanel arcane-border rounded-2xl p-3 flex flex-col items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">👟 Deslocamento</span>
+                    <input type="text" data-field="speed" class="w-full text-center text-xl font-display font-bold my-1" style="background: transparent; border: none;" placeholder="9m">
+                    <span class="text-[10px] text-slate-400 uppercase">Velocidade</span>
+                </div>
+
+                <!-- Percepção Passiva -->
+                <div class="bg-slatepanel arcane-border rounded-2xl p-3 flex flex-col items-center justify-between">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 text-center">👁 Percepção Passiva</span>
+                    <div id="passivePerceptionDisplay" class="text-2xl font-display font-extrabold my-1">10</div>
+                    <span class="text-[10px] text-slate-400 uppercase">10 + Percepção</span>
+                </div>
+            </div>
+
+            <!-- Pontos de Vida (PV), Dados de Vida e Salvaguardas contra Morte -->
+            <div class="md:col-span-7 bg-slatepanel arcane-border rounded-2xl p-4 flex flex-col justify-between space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <h2 class="font-display font-bold text-sm uppercase tracking-wider text-slate-200 m-0">❤️ Pontos de Vida</h2>
+                        <span id="bloodiedBadge" class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase bg-red-950 text-red-400" style="border: 1px solid rgba(239, 68, 68, 0.45);">
+                            🩸 Sangrando (≤50%)
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button type="button" onclick="adjustHP(-5)" class="px-2.5 py-1 rounded bg-red-950/70 text-red-300 text-xs font-bold" style="border: 1px solid rgba(239,68,68,0.35);">-5</button>
+                        <button type="button" onclick="adjustHP(-1)" class="px-2.5 py-1 rounded bg-red-950/70 text-red-300 text-xs font-bold" style="border: 1px solid rgba(239,68,68,0.35);">-1</button>
+                        <button type="button" onclick="adjustHP(1)" class="px-2.5 py-1 rounded bg-emerald-950/70 text-emerald-300 text-xs font-bold" style="border: 1px solid rgba(16,185,129,0.35);">+1</button>
+                        <button type="button" onclick="adjustHP(5)" class="px-2.5 py-1 rounded bg-emerald-950/70 text-emerald-300 text-xs font-bold" style="border: 1px solid rgba(16,185,129,0.35);">+5</button>
+                    </div>
+                </div>
+
+                <!-- PV Atual / Máximo / Temporário -->
+                <div class="grid grid-cols-3 gap-2.5">
+                    <div class="bg-slatecard rounded-xl p-2 text-center" style="border: 1px solid var(--border-subtle);">
+                        <label class="block text-[10px] font-bold uppercase text-slate-400">PV Atuais</label>
+                        <input type="number" data-field="hpCurrent" class="w-full text-center text-2xl font-bold text-emerald-400 mt-0.5" style="background: transparent; border: none;">
+                    </div>
+                    <div class="bg-slatecard rounded-xl p-2 text-center" style="border: 1px solid var(--border-subtle);">
+                        <label class="block text-[10px] font-bold uppercase text-slate-400">PV Máximos</label>
+                        <input type="number" data-field="hpMax" class="w-full text-center text-2xl font-bold mt-0.5" style="background: transparent; border: none;">
+                    </div>
+                    <div class="bg-slatecard rounded-xl p-2 text-center" style="border: 1px solid var(--border-subtle);">
+                        <label class="block text-[10px] font-bold uppercase text-sky-400">PV Temp.</label>
+                        <input type="number" data-field="hpTemp" class="w-full text-center text-2xl font-bold text-sky-400 mt-0.5" style="background: transparent; border: none;">
+                    </div>
+                </div>
+
+                <!-- Dados de Vida e Testes contra Morte -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-2" style="border-top: 1px solid var(--border-subtle);">
+                    <div class="bg-slatecard rounded-xl p-2.5 flex items-center justify-between" style="border: 1px solid var(--border-subtle);">
+                        <div>
+                            <span class="block text-[10px] font-bold uppercase text-slate-400">Dados de Vida</span>
+                            <div class="flex items-center gap-1 mt-1">
+                                <input type="number" data-field="hitDiceCurrent" class="w-12 text-center text-sm font-bold text-amber-400 py-0.5">
+                                <span class="text-slate-400 text-xs">/</span>
+                                <input type="text" data-field="hitDiceTotal" class="w-16 text-center text-sm py-0.5" placeholder="1d8">
+                            </div>
+                        </div>
+                        <button type="button" onclick="spendHitDie()" class="px-3 py-1.5 rounded-lg text-amber-400 text-xs font-bold" style="background-color: rgb(var(--accent-500) / 0.16); border: 1px solid rgb(var(--accent-500) / 0.35);">
+                            Usar DV
+                        </button>
+                    </div>
+
+                    <div class="bg-slatecard rounded-xl p-2.5 flex flex-col justify-center" style="border: 1px solid var(--border-subtle);">
+                        <div class="flex items-center justify-between text-xs mb-1.5">
+                            <span class="text-emerald-400 font-semibold">💚 Sucessos (Morte)</span>
+                            <div class="flex gap-2" id="deathSuccessesContainer"></div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-red-400 font-semibold">💀 Falhas (Morte)</span>
+                            <div class="flex gap-2" id="deathFailuresContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 3: ATRIBUTOS, SALVAGUARDAS E PERÍCIAS (D&D 5.5 / 2024) -->
+        <section id="section-attributes">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <h2 class="font-display font-bold text-base uppercase tracking-wider text-amber-400 m-0">🎲 Atributos, Resistências & Perícias</h2>
+                <span class="text-[11px] text-slate-400">Toque na bolinha: ○ Normal | ● Proficiente | ★ Especialização</span>
+            </div>
+            <div id="attributesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Preenchido via JS -->
+            </div>
+        </section>
+
+        <!-- SEÇÃO 4: PAINEL DE ABAS (Combate, Magias, Mochila, Notas, Guia 2024) -->
+        <section id="section-tabs" class="bg-slatepanel arcane-border rounded-2xl overflow-hidden">
+            <!-- Barra de Abas Superior -->
+            <div class="flex overflow-x-auto bg-slatecard" style="border-bottom: 1px solid var(--border-subtle);">
+                <button type="button" onclick="switchTab('combat')" id="tabBtn-combat" class="tab-btn px-4 py-3 text-xs sm:text-sm font-bold text-amber-400 whitespace-nowrap" style="border-bottom: 2px solid rgb(var(--accent-500)); background: transparent;">
+                    ⚔️ Combate & Maestrias
+                </button>
+                <button type="button" onclick="switchTab('spells')" id="tabBtn-spells" class="tab-btn px-4 py-3 text-xs sm:text-sm font-semibold text-slate-400 whitespace-nowrap" style="border-bottom: 2px solid transparent; background: transparent;">
+                    🔥 Magias & Grimório
+                </button>
+                <button type="button" onclick="switchTab('inventory')" id="tabBtn-inventory" class="tab-btn px-4 py-3 text-xs sm:text-sm font-semibold text-slate-400 whitespace-nowrap" style="border-bottom: 2px solid transparent; background: transparent;">
+                    🎒 Inventário & Moedas
+                </button>
+                <button type="button" onclick="switchTab('notes')" id="tabBtn-notes" class="tab-btn px-4 py-3 text-xs sm:text-sm font-semibold text-slate-400 whitespace-nowrap" style="border-bottom: 2px solid transparent; background: transparent;">
+                    📜 Anotações
+                </button>
+                <button type="button" onclick="switchTab('tutorial')" id="tabBtn-tutorial" class="tab-btn px-4 py-3 text-xs sm:text-sm font-semibold text-slate-400 whitespace-nowrap" style="border-bottom: 2px solid transparent; background: transparent;">
+                    📖 Guia & Regras (2024)
+                </button>
+            </div>
+
+            <!-- ABA 1: COMBATE & MAESTRIAS -->
+            <div id="tabContent-combat" class="tab-content p-4 space-y-5">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <h3 class="font-display font-bold text-amber-400 text-sm uppercase m-0">Ataques & Maestria de Armas (2024)</h3>
+                        <p class="text-xs text-slate-400 m-0 mt-0.5">Toque no dado para rolar acerto ou na chama para rolar o dano.</p>
+                    </div>
+                    <button type="button" onclick="addWeapon()" class="px-3 py-1.5 rounded-lg text-amber-400 text-xs font-bold" style="background-color: rgb(var(--accent-500) / 0.16); border: 1px solid rgb(var(--accent-500) / 0.4);">
+                        + Adicionar Ataque
+                    </button>
+                </div>
+
+                <!-- Lista Responsiva em Cards (Sem scroll horizontal no celular) -->
+                <div id="weaponsListContainer" class="space-y-3"></div>
+
+                <!-- Características e Talentos -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-3" style="border-top: 1px solid var(--border-subtle);">
+                    <div>
+                        <label class="block font-display font-bold text-amber-400 text-xs uppercase mb-1.5">Características de Classe & Espécie</label>
+                        <textarea data-field="classFeatures" rows="6" class="w-full p-3 text-sm" placeholder="Ex: Retomar o Fôlego, Surto de Ação, Visão no Escuro..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-display font-bold text-amber-400 text-xs uppercase mb-1.5">Talentos (Origem & Gerais) & Dádivas Épicas</label>
+                        <textarea data-field="featsNotes" rows="6" class="w-full p-3 text-sm" placeholder="Descreva os benefícios dos seus talentos..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 2: MAGIAS & GRIMÓRIO -->
+            <div id="tabContent-spells" class="tab-content hidden p-4 space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-slatecard p-3.5 rounded-xl" style="border: 1px solid var(--border-subtle);">
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase text-slate-400 mb-1">Atributo de Conjuração</label>
+                        <select data-field="spellcastingAbility" class="w-full px-3 py-2 text-sm">
+                            <option value="none">Nenhum</option>
+                            <option value="int">Inteligência (Mago, Artífice)</option>
+                            <option value="wis">Sabedoria (Clérigo, Druida, Patrulheiro)</option>
+                            <option value="cha">Carisma (Bardo, Bruxo, Feiticeiro, Paladino)</option>
+                        </select>
+                    </div>
+                    <div class="bg-slatepanel rounded-xl p-2.5 text-center flex flex-col justify-center" style="border: 1px solid var(--border-subtle);">
+                        <span class="text-[10px] font-bold uppercase text-slate-400">CD de Resistência</span>
+                        <span id="spellSaveDcDisplay" class="text-2xl font-display font-extrabold text-amber-400 mt-0.5">—</span>
+                    </div>
+                    <div class="bg-slatepanel rounded-xl p-2.5 text-center flex flex-col justify-center" style="border: 1px solid var(--border-subtle);">
+                        <span class="text-[10px] font-bold uppercase text-slate-400">Bônus Ataque Mágico</span>
+                        <button type="button" onclick="rollSpellAttack()" class="roll-btn mx-auto px-4 py-0.5 rounded-lg text-2xl font-display font-extrabold text-amber-400 mt-0.5">
+                            <span id="spellAttackDisplay">—</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Espaços de Magia -->
+                <div>
+                    <h3 class="font-display font-bold text-amber-400 text-xs uppercase mb-2.5">Espaços de Magia (Usados / Totais)</h3>
+                    <div id="spellSlotsGrid" class="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2"></div>
+                </div>
+
+                <!-- Magias Conhecidas -->
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-display font-bold text-amber-400 text-sm uppercase m-0">Magias Conhecidas / Preparadas</h3>
+                        <button type="button" onclick="addSpell()" class="px-3 py-1.5 rounded-lg text-amber-400 text-xs font-bold" style="background-color: rgb(var(--accent-500) / 0.16); border: 1px solid rgb(var(--accent-500) / 0.4);">
+                            + Nova Magia
+                        </button>
+                    </div>
+                    <div id="spellsListContainer" class="space-y-2.5"></div>
+                </div>
+            </div>
+
+            <!-- ABA 3: INVENTÁRIO & MOEDAS -->
+            <div id="tabContent-inventory" class="tab-content hidden p-4 space-y-5">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    <div class="lg:col-span-4 space-y-4">
+                        <!-- Moedas -->
+                        <div class="bg-slatecard p-3.5 rounded-xl" style="border: 1px solid var(--border-subtle);">
+                            <h3 class="font-display font-bold text-amber-400 text-xs uppercase mb-2.5">🪙 Algibeira de Moedas</h3>
+                            <div class="grid grid-cols-5 gap-1.5 text-center">
+                                <div class="bg-slatepanel p-1.5 rounded-lg" style="border: 1px solid var(--border-subtle);">
+                                    <label class="block text-[10px] font-bold text-slate-400">PC</label>
+                                    <input type="number" data-currency="cp" class="w-full text-center text-sm font-bold mt-1" style="background: transparent; border: none;">
+                                </div>
+                                <div class="bg-slatepanel p-1.5 rounded-lg" style="border: 1px solid var(--border-subtle);">
+                                    <label class="block text-[10px] font-bold text-slate-300">PP</label>
+                                    <input type="number" data-currency="sp" class="w-full text-center text-sm font-bold mt-1" style="background: transparent; border: none;">
+                                </div>
+                                <div class="bg-slatepanel p-1.5 rounded-lg" style="border: 1px solid var(--border-subtle);">
+                                    <label class="block text-[10px] font-bold text-sky-400">PE</label>
+                                    <input type="number" data-currency="ep" class="w-full text-center text-sm font-bold mt-1" style="background: transparent; border: none;">
+                                </div>
+                                <div class="bg-slatepanel p-1.5 rounded-lg" style="border: 1px solid rgb(var(--accent-500) / 0.45);">
+                                    <label class="block text-[10px] font-bold text-amber-400">PO</label>
+                                    <input type="number" data-currency="gp" class="w-full text-center text-sm font-bold text-amber-400 mt-1" style="background: transparent; border: none;">
+                                </div>
+                                <div class="bg-slatepanel p-1.5 rounded-lg" style="border: 1px solid var(--border-subtle);">
+                                    <label class="block text-[10px] font-bold text-slate-300">PL</label>
+                                    <input type="number" data-currency="pp" class="w-full text-center text-sm font-bold mt-1" style="background: transparent; border: none;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sintonização Mágica -->
+                        <div class="bg-slatecard p-3.5 rounded-xl" style="border: 1px solid var(--border-subtle);">
+                            <h3 class="font-display font-bold text-amber-400 text-xs uppercase mb-2.5">✨ Sintonização Mágica (Máx. 3)</h3>
+                            <div id="attunementContainer" class="space-y-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- Mochila -->
+                    <div class="lg:col-span-8">
+                        <div class="flex items-center justify-between mb-3">
+                            <div>
+                                <h3 class="font-display font-bold text-amber-400 text-sm uppercase m-0">Equipamentos & Mochila</h3>
+                                <p class="text-xs text-slate-400 m-0">Peso total: <strong id="totalWeightDisplay">0</strong> kg/lb</p>
+                            </div>
+                            <button type="button" onclick="addInventoryItem()" class="px-3 py-1.5 rounded-lg text-amber-400 text-xs font-bold" style="background-color: rgb(var(--accent-500) / 0.16); border: 1px solid rgb(var(--accent-500) / 0.4);">
+                                + Adicionar Item
+                            </button>
+                        </div>
+                        <div id="inventoryListContainer" class="space-y-2.5"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 4: ANOTAÇÕES & HISTÓRIA -->
+            <div id="tabContent-notes" class="tab-content hidden p-4 space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-amber-400 mb-1.5">Proficiências (Armaduras, Armas, Ferramentas) & Idiomas</label>
+                        <textarea data-field="proficienciesText" rows="5" class="w-full p-3 text-sm" placeholder="Ex: Armaduras leves/médias, armas simples, Comum, Élfico..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-amber-400 mb-1.5">Personalidade, Ideais, Vínculos & Defeitos</label>
+                        <textarea data-field="personalityText" rows="5" class="w-full p-3 text-sm" placeholder="Traços interpretativos do personagem..."></textarea>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-amber-400 mb-1.5">História do Personagem & Diário de Campanha</label>
+                    <textarea data-field="backstoryText" rows="6" class="w-full p-3 text-sm" placeholder="Anotações das sessões, NPCs e objetivos..."></textarea>
+                </div>
+            </div>
+
+            <!-- ABA 5: GUIA & REGRAS DE CRIAÇÃO D&D 5.5 (2024) -->
+            <div id="tabContent-tutorial" class="tab-content hidden p-4 space-y-5">
+                <!-- Banner Livro do Jogador no Google Drive -->
+                <div class="bg-slatecard rounded-2xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
+                    <div>
+                        <h3 class="font-display font-bold text-base sm:text-lg text-amber-400 m-0">✨ Como Criar seu Personagem no D&D 5.5 (2024)</h3>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1.5 mb-0">
+                            Siga os <strong>6 passos</strong> recomendados pelo Livro do Jogador 2024. Todos os bônus de proficiência, modificadores, perícias e CDs são calculados automaticamente!
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-2 shrink-0">
+                        <a id="driveBookLink" href="https://drive.google.com/file/d/1l-j5pc2prztCIlgfkEfng_yIWs5xT71e/view?usp=sharing" target="_blank" rel="noopener noreferrer"
+                            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-display font-extrabold text-xs sm:text-sm"
+                            style="background: linear-gradient(135deg, rgb(var(--accent-500)), rgb(var(--accent-600))); color: #0b0d12; text-decoration: none;">
+                            <span>📖 Livro do Jogador (Drive) ↗</span>
+                        </a>
+                        <button type="button" onclick="toggleDriveConfig()" title="Configurar Link do Drive"
+                            class="p-2.5 rounded-xl bg-slatepanel text-amber-400 text-xs font-bold" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
+                            🔗
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Painel Opcional de Edição de URL do Drive -->
+                <div id="driveConfigPanel" class="hidden bg-slatecard rounded-xl p-3 flex flex-col md:flex-row items-stretch md:items-center gap-2" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
+                    <span class="text-xs text-amber-400 font-bold shrink-0">📁 URL do PDF/Pasta:</span>
+                    <input type="url" id="driveUrlInput" placeholder="Cole o link do Google Drive..." class="flex-1 px-3 py-1.5 text-xs">
+                    <button type="button" onclick="saveDriveUrl()" class="px-3.5 py-1.5 rounded-lg font-bold text-xs" style="background-color: rgb(var(--accent-500)); color: #0b0d12;">
+                        Salvar Link
+                    </button>
+                </div>
+
+                <!-- 6 Passos de Criação -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                    <div class="bg-slatecard rounded-2xl p-4 space-y-2" style="border: 1px solid var(--border-subtle);">
+                        <div class="flex items-center gap-2">
+                            <span class="rounded-full font-display font-extrabold text-xs flex items-center justify-center" style="width: 1.5rem; height: 1.5rem; background-color: rgb(var(--accent-500)); color: #0b0d12;">1</span>
+                            <h4 class="font-display font-bold text-sm text-amber-400 uppercase m-0">Escolha sua Classe</h4>
+                        </div>
+                        <p class="text-xs text-slate-300 m-0">Define seu estilo de jogo, dado de vida e habilidades principais:</p>
+                        <ul class="text-xs text-slate-400 space-y-1 pl-4 m-0">
+                            <li><strong>Dado de Vida:</strong> Anote na caixa <em>Dados de Vida</em> (ex: <code>1d10</code>).</li>
+                            <li><strong>Salvaguardas:</strong> Marque as 2 caixinhas de salvaguarda da sua classe.</li>
+                            <li><strong>Perícias:</strong> Toque na bolinha (<code>○ → ●</code>) das perícias iniciais.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slatecard rounded-2xl p-4 space-y-2" style="border: 1px solid var(--border-subtle);">
+                        <div class="flex items-center gap-2">
+                            <span class="rounded-full font-display font-extrabold text-xs flex items-center justify-center" style="width: 1.5rem; height: 1.5rem; background-color: rgb(var(--accent-500)); color: #0b0d12;">2</span>
+                            <h4 class="font-display font-bold text-sm text-amber-400 uppercase m-0">Antecedente & Espécie</h4>
+                        </div>
+                        <p class="text-xs text-slate-300 m-0">Na edição 2024, os bônus de atributo vêm do <strong>Antecedente</strong>:</p>
+                        <ul class="text-xs text-slate-400 space-y-1 pl-4 m-0">
+                            <li><strong>Antecedente:</strong> Concede <strong>+2/+1</strong> (ou +1/+1/+1) nos atributos, 2 perícias, 1 ferramenta e <strong>1 Talento de Origem</strong>.</li>
+                            <li><strong>Espécie:</strong> Define deslocamento (ex: <code>9m</code>) e traços especiais.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slatecard rounded-2xl p-4 space-y-2" style="border: 1px solid var(--border-subtle);">
+                        <div class="flex items-center gap-2">
+                            <span class="rounded-full font-display font-extrabold text-xs flex items-center justify-center" style="width: 1.5rem; height: 1.5rem; background-color: rgb(var(--accent-500)); color: #0b0d12;">3</span>
+                            <h4 class="font-display font-bold text-sm text-amber-400 uppercase m-0">Distribua os Atributos</h4>
+                        </div>
+                        <p class="text-xs text-slate-300 m-0">Distribua antes de somar o +2/+1 do Antecedente (máximo 20):</p>
+                        <div class="bg-slatepanel rounded-lg p-2 text-center" style="border: 1px solid var(--border-subtle);">
+                            <span class="block text-[10px] uppercase text-slate-400">Conjunto Padrão (Standard Array)</span>
+                            <span class="font-display font-bold text-amber-400 text-sm">15 • 14 • 13 • 12 • 10 • 8</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 m-0">Ou <strong>Compra de Pontos (27 pts):</strong> valores de 8 a 15 (9=1pt, 10=2pts, 11=3pts, 12=4pts, 13=5pts, 14=7pts, 15=9pts).</p>
+                    </div>
+
+                    <div class="bg-slatecard rounded-2xl p-4 space-y-2" style="border: 1px solid var(--border-subtle);">
+                        <div class="flex items-center gap-2">
+                            <span class="rounded-full font-display font-extrabold text-xs flex items-center justify-center" style="width: 1.5rem; height: 1.5rem; background-color: rgb(var(--accent-500)); color: #0b0d12;">4</span>
+                            <h4 class="font-display font-bold text-sm text-amber-400 uppercase m-0">Pontos de Vida & CA</h4>
+                        </div>
+                        <ul class="text-xs text-slate-400 space-y-1 pl-4 m-0">
+                            <li><strong>PV Nível 1:</strong> Valor máximo do Dado de Vida + mod. de <strong>Constituição</strong>.</li>
+                            <li><strong>CA Base:</strong> Sem armadura é <code>10 + mod. Destreza</code>. Com armadura, siga a regra dela e marque <em>Escudo (+2)</em> se usar um.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slatecard rounded-2xl p-4 space-y-2" style="border: 1px solid var(--border-subtle);">
+                        <div class="flex items-center gap-2">
+                            <span class="rounded-full font-display font-extrabold text-xs flex items-center justify-center" style="width: 1.5rem; height: 1.5rem; background-color: rgb(var(--accent-500)); color: #0b0d12;">5</span>
+                            <h4 class="font-display font-bold text-sm text-amber-400 uppercase m-0">Maestrias & Conjuração</h4>
+                        </div>
+                        <ul class="text-xs text-slate-400 space-y-1 pl-4 m-0">
+                            <li><strong>Maestria de Armas (2024):</strong> Classes marciais escolhem armas para ativar efeitos extras (Afligir, Derrubar, Roçar, etc.).</li>
+                            <li><strong>Magias:</strong> Selecione o Atributo de Conjuração na aba <em>Magias</em> para calcular CD e Ataque.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slatecard rounded-2xl p-4 space-y-2" style="border: 1px solid var(--border-subtle);">
+                        <div class="flex items-center gap-2">
+                            <span class="rounded-full font-display font-extrabold text-xs flex items-center justify-center" style="width: 1.5rem; height: 1.5rem; background-color: rgb(var(--accent-500)); color: #0b0d12;">6</span>
+                            <h4 class="font-display font-bold text-sm text-amber-400 uppercase m-0">Dicas no Celular & iPhone</h4>
+                        </div>
+                        <ul class="text-xs text-slate-400 space-y-1 pl-4 m-0">
+                            <li><strong>Safari:</strong> No iPhone, toque em <em>Compartilhar → Abrir no Safari</em> para garantir salvamento permanente.</li>
+                            <li><strong>Backup:</strong> Use <strong>Exportar</strong> no topo para salvar seu arquivo <code>.json</code> e enviar ao Mestre.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tabela Rápida das 12 Classes -->
+                <div class="bg-slatecard rounded-2xl p-4" style="border: 1px solid var(--border-subtle);">
+                    <h4 class="font-display font-bold text-amber-400 text-xs uppercase mb-3">🛡 Tabela Rápida das Classes (D&D 2024)</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs" style="border-collapse: collapse; min-width: 580px;">
+                            <thead>
+                                <tr class="text-[11px] uppercase text-slate-400" style="border-bottom: 1px solid var(--border-strong);">
+                                    <th class="py-2 px-2">Classe</th>
+                                    <th class="py-2 px-2 text-center">DV</th>
+                                    <th class="py-2 px-2">Atributo Principal</th>
+                                    <th class="py-2 px-2">Salvaguardas</th>
+                                    <th class="py-2 px-2">Destaque Nível 1 (2024)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-300">
+                                <tr style="border-bottom: 1px solid var(--border-subtle);"><td class="py-1.5 px-2 font-bold">Bárbaro</td><td class="py-1.5 px-2 text-center text-amber-400 font-bold">d12</td><td class="py-1.5 px-2">Força</td><td class="py-1.5 px-2">FOR, CON</td><td class="py-1.5 px-2 text-slate-400">Fúria, Defesa sem Armadura, 2 Maestrias</td></tr>
+                                <tr style="border-bottom: 1px solid var(--border-subtle);"><td class="py-1.5 px-2 font-bold">Bardo</td><td class="py-1.5 px-2 text-center text-amber-400 font-bold">d8</td><td class="py-1.5 px-2">Carisma</td><td class="py-1.5 px-2">DES, CAR</td><td class="py-1.5 px-2 text-slate-400">Inspiração de Bardo, Conjuração</td></tr>
+                                <tr style="border-bottom: 1px solid var(--border-subtle);"><td class="py-1.5 px-2 font-bold">Bruxo</td><td class="py-1.5 px-2 text-center text-amber-400 font-bold">d8</td><td class="py-1.5 px-2">Carisma</td><td class="py-1.5 px-2">SAB, CAR</td><td class="py-1.5 px-2 text-slate-400">Magia de Pacto, 1 Invocação Mística</td></tr>
+                                <tr style="border-bottom: 1px solid var(--border-subtle);"><td class="py-1.5 px-2 font-bold">Clérigo</td><td class="py-1.5 px-2 text-center text-amber-400 font-bold">d8</td><td class="py-1.5 px-2">Sabedoria</td><td class="py-1.5 px-2">SAB, CAR</td><td class="py-1.5 px-2 text-slate-400">Conjuração, Ordem Divina</td></tr>
+                                <tr style="border-bottom: 1px solid var(--border-subtle);"><td class="py-1.5 px-2 font-bold">Druida</td><td class="py-1.5 px-2 text-center text-amber-400 font-bold">d8</td><td class="py-1.5 px-2">Sabedoria</td><td class="py-1.5 px-2">INT, SAB</td><td class="py-1.5 px-2 text-slate-400">Conjuração, Ordem Primal, Druídico</td></tr>
+                                <tr style="border-bottom: 1px solid var(--border-subtle);"><td class="py-1.5 px-2 font-bold">Feiticeiro</td><td class="py-1.5 px-2 text-center text-amber-400 font-bold">d6</td><td class="py-1.5 px-2">Carisma</td><td class="py-1.5 px-2">CON, CAR</td><td class="py-1.5 px-2 text-slate-400">Conjuração, Feitiçaria Inata</td></tr>
+                                <tr style="border-bottom: 1px solid var(--border-subtle);"><td class="py-1.5 px-2 font-bold">Guerreiro</td><td class="py-1.5 px-2 text-center text-amber-400 font-bold">d10</td><td class="py-1.5 px-2">Força ou Destreza</td><td class="py-1.5 px-2">FOR, CON</td><td class="py-1.5 px-2 text-slate-400">Estilo de Luta, Retomar o Fôlego, 3 Maestrias</td></tr>
+                                <tr style="border-bottom: 1px solid var(--border-subtle);"><td class="py-1.5 px-2 font-bold">Ladino</td><td class="py-1.5 px-2 text-center text-amber-400 font-bold">d8</td><td class="py-1.5 px-2">Destreza</td><td class="py-1.5 px-2">DES, INT</td><td class="py-1.5 px-2 text-slate-400">Especialização (2), Ataque Furtivo, 2 Maestrias</td></tr>
+                                <tr style="border-bottom: 1px solid var(--border-subtle);"><td class="py-1.5 px-2 font-bold">Mago</td><td class="py-1.5 px-2 text-center text-amber-400 font-bold">d6</td><td class="py-1.5 px-2">Inteligência</td><td class="py-1.5 px-2">INT, SAB</td><td class="py-1.5 px-2 text-slate-400">Grimório, Recuperação Arcana, Adepto Ritual</td></tr>
+                                <tr style="border-bottom: 1px solid var(--border-subtle);"><td class="py-1.5 px-2 font-bold">Monge</td><td class="py-1.5 px-2 text-center text-amber-400 font-bold">d8</td><td class="py-1.5 px-2">Destreza & Sabedoria</td><td class="py-1.5 px-2">FOR, DES</td><td class="py-1.5 px-2 text-slate-400">Artes Marciais (1d6), Defesa sem Armadura</td></tr>
+                                <tr style="border-bottom: 1px solid var(--border-subtle);"><td class="py-1.5 px-2 font-bold">Paladino</td><td class="py-1.5 px-2 text-center text-amber-400 font-bold">d10</td><td class="py-1.5 px-2">Força & Carisma</td><td class="py-1.5 px-2">SAB, CAR</td><td class="py-1.5 px-2 text-slate-400">Cura pelas Mãos, Conjuração Nv.1, 2 Maestrias</td></tr>
+                                <tr><td class="py-1.5 px-2 font-bold">Patrulheiro</td><td class="py-1.5 px-2 text-center text-amber-400 font-bold">d10</td><td class="py-1.5 px-2">Destreza & Sabedoria</td><td class="py-1.5 px-2">FOR, DES</td><td class="py-1.5 px-2 text-slate-400">Conjuração Nv.1, Marca do Caçador, 2 Maestrias</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- WIDGET FLUTUANTE DE ROLAGEM DE DADOS -->
+    <div id="diceWidgetWrapper">
+        <!-- Painel Expandido do Rolador -->
+        <div id="diceDrawer" class="hidden arcane-border shadow-2xl">
+            <div class="flex items-center justify-between pb-2 mb-3" style="border-bottom: 1px solid var(--border-subtle);">
+                <span class="font-display font-bold text-amber-400 text-sm">🎲 Mesa de Dados</span>
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="clearDiceLog()" class="text-[11px] text-slate-400 hover:text-amber-400" style="background: transparent; border: none;">Limpar</button>
+                    <button type="button" onclick="toggleDiceDrawer()" class="text-slate-400 font-bold text-sm" style="background: transparent; border: none;">✕</button>
+                </div>
+            </div>
+
+            <!-- Modo de Rolagem -->
+            <div class="grid grid-cols-3 gap-1 bg-slatecard p-1 rounded-xl mb-3 text-xs font-bold" style="border: 1px solid var(--border-subtle);">
+                <button type="button" onclick="setRollMode('normal')" id="mode-normal" class="py-1.5 rounded-lg text-white" style="background-color: rgb(var(--accent-600)); border: none;">Normal</button>
+                <button type="button" onclick="setRollMode('adv')" id="mode-adv" class="py-1.5 rounded-lg text-slate-400" style="background: transparent; border: none;">Vantagem</button>
+                <button type="button" onclick="setRollMode('dis')" id="mode-dis" class="py-1.5 rounded-lg text-slate-400" style="background: transparent; border: none;">Desvantagem</button>
+            </div>
+
+            <!-- Dados Rápidos -->
+            <div class="grid grid-cols-7 gap-1 mb-3">
+                <button type="button" onclick="rollCustomDie(4)" class="py-2 rounded-lg bg-slatecard text-xs font-bold" style="border: 1px solid var(--border-strong);">d4</button>
+                <button type="button" onclick="rollCustomDie(6)" class="py-2 rounded-lg bg-slatecard text-xs font-bold" style="border: 1px solid var(--border-strong);">d6</button>
+                <button type="button" onclick="rollCustomDie(8)" class="py-2 rounded-lg bg-slatecard text-xs font-bold" style="border: 1px solid var(--border-strong);">d8</button>
+                <button type="button" onclick="rollCustomDie(10)" class="py-2 rounded-lg bg-slatecard text-xs font-bold" style="border: 1px solid var(--border-strong);">d10</button>
+                <button type="button" onclick="rollCustomDie(12)" class="py-2 rounded-lg bg-slatecard text-xs font-bold" style="border: 1px solid var(--border-strong);">d12</button>
+                <button type="button" onclick="rollCustomDie(20)" class="py-2 rounded-lg text-xs font-extrabold text-amber-400" style="background-color: rgb(var(--accent-500) / 0.18); border: 1px solid rgb(var(--accent-500) / 0.5);">d20</button>
+                <button type="button" onclick="rollCustomDie(100)" class="py-2 rounded-lg bg-slatecard text-[11px] font-bold" style="border: 1px solid var(--border-strong);">d100</button>
+            </div>
+
+            <!-- Histórico de Rolagens -->
+            <div id="diceLogContainer" class="overflow-y-auto space-y-2" style="max-height: 11rem;">
+                <p class="text-xs text-slate-400 text-center py-3">Toque em qualquer atributo, perícia ou dado acima para rolar.</p>
+            </div>
+        </div>
+
+        <!-- Botão Flutuante Desktop -->
+        <button type="button" id="desktopDiceFab" onclick="toggleDiceDrawer()"
+            class="items-center gap-2 font-display font-extrabold px-4 py-3 rounded-full shadow-lg"
+            style="background: linear-gradient(135deg, rgb(var(--accent-600)), rgb(var(--accent-500))); color: #0b0d12; border: none;">
+            <span>🎲 Dados</span>
+            <span id="lastRollBadgeDesktop" class="hidden text-xs font-bold px-2 py-0.5 rounded-full" style="background-color: #0b0d12; color: rgb(var(--accent-400));">20</span>
+        </button>
+    </div>
+
+    <!-- BARRA DE NAVEGAÇÃO INFERIOR FIXA MOBILE (< 768px) -->
+    <nav id="mobileBottomNav" aria-label="Navegação Mobile">
+        <button type="button" onclick="mobileNavTo('attributes')" class="flex flex-col items-center justify-center py-1 text-[10px] font-bold text-slate-300" style="background: transparent; border: none;">
+            <span class="text-sm">📊</span>
+            <span>Atributos</span>
+        </button>
+        <button type="button" onclick="mobileNavTo('combat')" class="flex flex-col items-center justify-center py-1 text-[10px] font-bold text-slate-300" style="background: transparent; border: none;">
+            <span class="text-sm">⚔️</span>
+            <span>Combate</span>
+        </button>
+        <button type="button" onclick="mobileNavTo('spells')" class="flex flex-col items-center justify-center py-1 text-[10px] font-bold text-slate-300" style="background: transparent; border: none;">
+            <span class="text-sm">🔥</span>
+            <span>Magias</span>
+        </button>
+        <button type="button" onclick="mobileNavTo('inventory')" class="flex flex-col items-center justify-center py-1 text-[10px] font-bold text-slate-300" style="background: transparent; border: none;">
+            <span class="text-sm">🎒</span>
+            <span>Mochila</span>
+        </button>
+        <button type="button" onclick="mobileNavTo('tutorial')" class="flex flex-col items-center justify-center py-1 text-[10px] font-bold text-slate-300" style="background: transparent; border: none;">
+            <span class="text-sm">📖</span>
+            <span>Guia</span>
+        </button>
+        <button type="button" onclick="toggleDiceDrawer()" class="flex flex-col items-center justify-center py-1 text-[10px] font-extrabold text-amber-400 relative" style="background: transparent; border: none;">
+            <span class="text-sm">🎲</span>
+            <span>Dados</span>
+            <span id="lastRollBadgeMobile" class="hidden absolute top-0 right-2 text-[9px] font-extrabold px-1.5 rounded-full" style="background-color: rgb(var(--accent-500)); color: #0b0d12;">20</span>
+        </button>
+    </nav>
+
+    <script>
+        // ============================================================================
+        // CONSTANTES E REGRAS D&D 5.5 (2024)
+        // ============================================================================
+        const STORAGE_KEY = 'dnd_5_5_characters_v1';
+        const ACTIVE_ID_KEY = 'dnd_5_5_active_char_id_v1';
+        const DRIVE_URL_KEY = 'dnd_5_5_drive_url_v1';
+        const THEME_MODE_KEY = 'dnd_5_5_theme_mode_v1';
+        const ACCENT_COLOR_KEY = 'dnd_5_5_accent_color_v1';
+        const DEFAULT_DRIVE_URL = 'https://drive.google.com/file/d/1l-j5pc2prztCIlgfkEfng_yIWs5xT71e/view?usp=sharing';
+
+        const ACCENT_THEMES = [
+            { id: 'gold', name: 'Ouro Lathander', swatch: '#f59e0b', c200: '253 230 138', c300: '252 211 77', c400: '251 191 36', c500: '245 158 11', c600: '217 119 6', c700: '180 83 9', c900: '120 53 15' },
+            { id: 'crimson', name: 'Rubi Tiamat', swatch: '#ef4444', c200: '254 202 202', c300: '252 165 165', c400: '248 113 113', c500: '239 68 68', c600: '220 38 38', c700: '185 28 28', c900: '127 29 29' },
+            { id: 'emerald', name: 'Esmeralda Silvanus', swatch: '#10b981', c200: '167 243 208', c300: '110 231 183', c400: '52 211 153', c500: '16 185 129', c600: '5 150 105', c700: '4 120 87', c900: '6 78 59' },
+            { id: 'arcane', name: 'Safira Mystra', swatch: '#3b82f6', c200: '191 219 254', c300: '147 197 253', c400: '96 165 250', c500: '59 130 246', c600: '37 99 235', c700: '29 78 216', c900: '30 58 138' },
+            { id: 'amethyst', name: 'Ametista Vecna', swatch: '#a855f7', c200: '233 213 255', c300: '216 180 254', c400: '192 132 252', c500: '168 85 247', c600: '147 51 234', c700: '126 34 206', c900: '88 28 135' },
+            { id: 'cyan', name: 'Gelo Auril', swatch: '#06b6d4', c200: '165 243 252', c300: '103 232 249', c400: '34 211 238', c500: '6 182 212', c600: '8 145 178', c700: '14 116 144', c900: '22 78 99' }
+        ];
+
+        const SELUNE_SVG = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3.5a8.5 8.5 0 1 0 5 14.8A7 7 0 0 1 15.5 3.5z" fill="currentColor" fill-opacity="0.2"/><polygon points="17.5,6.5 18.2,8.1 19.8,8.8 18.2,9.5 17.5,11.1 16.8,9.5 15.2,8.8 16.8,8.1" fill="currentColor" stroke="none"/><circle cx="19.5" cy="13.5" r="1" fill="currentColor" stroke="none"/><circle cx="14.5" cy="13" r="0.8" fill="currentColor" stroke="none"/></svg>`;
+        const LATHANDER_SVG = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18"/><path d="M7 18a5 5 0 0 1 10 0" fill="currentColor" fill-opacity="0.25"/><path d="M12 4v4"/><path d="M5.6 7.6l2.8 2.8"/><path d="M18.4 7.6l-2.8 2.8"/><path d="M3 14h3"/><path d="M18 14h3"/></svg>`;
+
+        const ATTRIBUTES_CONFIG = [
+            { key: 'str', abbr: 'FOR', label: 'Força', skills: [{ key: 'athletics', label: 'Atletismo' }] },
+            { key: 'dex', abbr: 'DES', label: 'Destreza', skills: [{ key: 'acrobatics', label: 'Acrobacia' }, { key: 'sleightOfHand', label: 'Prestidigitação' }, { key: 'stealth', label: 'Furtividade' }] },
+            { key: 'con', abbr: 'CON', label: 'Constituição', skills: [] },
+            { key: 'int', abbr: 'INT', label: 'Inteligência', skills: [{ key: 'arcana', label: 'Arcanismo' }, { key: 'history', label: 'História' }, { key: 'investigation', label: 'Investigação' }, { key: 'nature', label: 'Natureza' }, { key: 'religion', label: 'Religião' }] },
+            { key: 'wis', abbr: 'SAB', label: 'Sabedoria', skills: [{ key: 'animalHandling', label: 'Lidar com Animais' }, { key: 'insight', label: 'Intuição' }, { key: 'medicine', label: 'Medicina' }, { key: 'perception', label: 'Percepção' }, { key: 'survival', label: 'Sobrevivência' }] },
+            { key: 'cha', abbr: 'CAR', label: 'Carisma', skills: [{ key: 'deception', label: 'Enganação' }, { key: 'intimidation', label: 'Intimidação' }, { key: 'performance', label: 'Atuação' }, { key: 'persuasion', label: 'Persuasão' }] }
+        ];
+
+        const WEAPON_MASTERIES = [
+            { name: 'Nenhuma', desc: '' },
+            { name: 'Atravessar (Cleave)', desc: 'Ao atingir, faça 1 ataque corpo a corpo extra em outra criatura a 1,5m (sem somar mod. no dano).' },
+            { name: 'Roçar (Graze)', desc: 'Se errar o ataque, causa dano igual ao modificador do atributo usado.' },
+            { name: 'Ágil (Nick)', desc: 'O ataque extra da propriedade Leve faz parte da própria ação de Ataque.' },
+            { name: 'Empurrar (Push)', desc: 'Empurra criatura Grande ou menor até 3m em linha reta.' },
+            { name: 'Drenar (Sap)', desc: 'O alvo tem Desvantagem na próxima jogada de ataque antes do seu próximo turno.' },
+            { name: 'Lento (Slow)', desc: 'Reduz o deslocamento do alvo em 3m até o início do seu próximo turno.' },
+            { name: 'Derrubar (Topple)', desc: 'Alvo faz Salvaguarda de CON (CD 8 + Prof + Mod) ou cai Caído.' },
+            { name: 'Afligir (Vex)', desc: 'Você ganha Vantagem na próxima jogada de ataque contra o mesmo alvo até o fim do próximo turno.' }
+        ];
+
+        // ============================================================================
+        // ESTADO GLOBAL
+        // ============================================================================
+        let characters = [];
+        let activeCharId = null;
+        let rollMode = 'normal';
+        let diceLogs = [];
+        let soundEnabled = true;
+        let audioCtx = null;
+        let diceAnimInterval = null;
+        let isLightMode = false;
+        let currentAccentId = 'gold';
+
+        // ============================================================================
+        // SINTETIZADOR DE ÁUDIO BÁRDICO & DADOS (WEB AUDIO API OFFLINE)
+        // ============================================================================
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            const iconEl = document.getElementById('soundIconSpan');
+            const labelEl = document.getElementById('soundLabelSpan');
+            if (soundEnabled) {
+                if (iconEl) iconEl.textContent = '🔊';
+                if (labelEl) labelEl.textContent = 'Som';
+                playBardicChord([261.63, 329.63, 392.00, 523.25], 0.05, 0.75, 0.11);
+                showToast('Som Bárdico ativado!', 'info');
+            } else {
+                if (iconEl) iconEl.textContent = '🔇';
+                if (labelEl) labelEl.textContent = 'Mudo';
+                showToast('Som desativado.', 'info');
+            }
+        }
+
+        function playPluckedNote(freq, startTime, duration = 0.7, volume = 0.12) {
+            const ctx = getAudioContext();
+            if (!ctx || !soundEnabled) return;
+
+            const osc = ctx.createOscillator();
+            const subOsc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const filter = ctx.createBiquadFilter();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, startTime);
+            subOsc.type = 'sine';
+            subOsc.frequency.setValueAtTime(freq * 2, startTime);
+
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(freq * 4, startTime);
+            filter.frequency.exponentialRampToValueAtTime(freq * 1.2, startTime + duration);
+
+            gain.gain.setValueAtTime(0.001, startTime);
+            gain.gain.linearRampToValueAtTime(volume, startTime + 0.015);
+            gain.gain.exponentialRampToValueAtTime(0.0008, startTime + duration);
+
+            osc.connect(filter);
+            subOsc.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(startTime);
+            subOsc.start(startTime);
+            osc.stop(startTime + duration + 0.05);
+            subOsc.stop(startTime + duration + 0.05);
+        }
+
+        function playBardicChord(freqs, stagger = 0.06, duration = 0.8, volume = 0.11) {
+            const ctx = getAudioContext();
+            if (!ctx || !soundEnabled) return;
+            const now = ctx.currentTime;
+            freqs.forEach((f, idx) => playPluckedNote(f, now + idx * stagger, duration, volume));
+        }
+
+        function playDiceRollSound() {
+            const ctx = getAudioContext();
+            if (!ctx || !soundEnabled) return;
+            const now = ctx.currentTime;
+
+            [0, 0.09, 0.18, 0.28, 0.39].forEach((offset, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(160 + i * 25, now + offset);
+                osc.frequency.exponentialRampToValueAtTime(65, now + offset + 0.05);
+
+                gain.gain.setValueAtTime(0.14 - i * 0.02, now + offset);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.06);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + offset);
+                osc.stop(now + offset + 0.065);
+            });
+
+            playBardicChord([293.66, 369.99, 440.00], 0.05, 0.65, 0.07);
+        }
+
+        function playCriticalFanfare() {
+            playBardicChord([261.63, 329.63, 392.00, 523.25, 659.25], 0.06, 1.3, 0.15);
+        }
+
+        function playFumbleChord() {
+            playBardicChord([220.00, 261.63, 311.13, 329.63], 0.08, 1.1, 0.13);
+        }
+
+        // ============================================================================
+        // PERSISTÊNCIA LOCAL (LOCALSTORAGE) E MODELO VAZIO
+        // ============================================================================
+        function createBlankCharacter() {
+            return {
+                id: 'char_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                name: '',
+                charClass: '',
+                subclass: '',
+                species: '',
+                background: '',
+                originFeat: '',
+                level: 1,
+                xp: 0,
+                inspiration: false,
+                ac: 10,
+                hasShield: false,
+                initBonus: 0,
+                speed: '9m',
+                hpCurrent: 0,
+                hpMax: 0,
+                hpTemp: 0,
+                hitDiceCurrent: 1,
+                hitDiceTotal: '1d8',
+                deathSaves: {
+                    successes: [false, false, false],
+                    failures: [false, false, false]
+                },
+                attributes: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
+                savingThrows: { str: false, dex: false, con: false, int: false, wis: false, cha: false },
+                skills: {},
+                weapons: [],
+                classFeatures: '',
+                featsNotes: '',
+                spellcastingAbility: 'none',
+                spellSlots: {},
+                spells: [],
+                currency: { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 },
+                attunement: ['', '', ''],
+                inventory: [],
+                proficienciesText: '',
+                personalityText: '',
+                backstoryText: ''
+            };
+        }
+
+        function loadFromStorage() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                characters = raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                characters = [];
+            }
+            if (!Array.isArray(characters) || characters.length === 0) {
+                characters = [createBlankCharacter()];
+            }
+            const savedActive = localStorage.getItem(ACTIVE_ID_KEY);
+            activeCharId = characters.some(c => c.id === savedActive) ? savedActive : characters[0].id;
+            saveToStorage(false);
+        }
+
+        function saveToStorage(flashIndicator = true) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
+                localStorage.setItem(ACTIVE_ID_KEY, activeCharId);
+                if (flashIndicator) {
+                    const ind = document.getElementById('saveIndicator');
+                    if (ind) {
+                        ind.style.transform = 'scale(1.06)';
+                        setTimeout(() => { ind.style.transform = 'scale(1)'; }, 180);
+                    }
+                }
+            } catch (e) {
+                showToast('Aviso: armazenamento local indisponível neste modo de visualização.', 'info');
+            }
+        }
+
+        function getActiveChar() {
+            return characters.find(c => c.id === activeCharId) || characters[0];
+        }
+
+        // ============================================================================
+        // CÁLCULOS DE REGRAS D&D 5.5 (2024)
+        // ============================================================================
+        function getMod(score) {
+            const val = parseInt(score);
+            return Math.floor(((isNaN(val) ? 10 : val) - 10) / 2);
+        }
+
+        function formatMod(mod) {
+            return mod >= 0 ? `+${mod}` : `${mod}`;
+        }
+
+        function getProficiencyBonus(level) {
+            const lvl = Math.max(1, Math.min(20, parseInt(level) || 1));
+            return Math.ceil(lvl / 4) + 1;
+        }
+
+        function getSkillTotal(char, attrKey, skillKey) {
+            const mod = getMod(char.attributes[attrKey]);
+            const profLevel = char.skills[skillKey] || 0;
+            const profBonus = getProficiencyBonus(char.level);
+            return mod + (profLevel * profBonus);
+        }
+
+        // ============================================================================
+        // RENDERIZAÇÃO DA INTERFACE
+        // ============================================================================
+        function renderAll() {
+            const char = getActiveChar();
+            renderCharacterDropdown();
+            populateSimpleFields(char);
+            updateComputedStats(char);
+            renderDeathSaves(char);
+            renderAttributesAndSkills(char);
+            renderWeapons(char);
+            renderSpellSlots(char);
+            renderSpells(char);
+            renderInventoryAndCurrency(char);
+        }
+
+        function renderCharacterDropdown() {
+            const select = document.getElementById('characterSelect');
+            select.innerHTML = characters.map(c => {
+                const label = (c.name && c.name.trim()) ? `${c.name} (Nv.${c.level || 1})` : `Ficha sem nome (Nv.${c.level || 1})`;
+                return `<option value="${c.id}" ${c.id === activeCharId ? 'selected' : ''}>${escapeHtml(label)}</option>`;
+            }).join('');
+        }
+
+        function populateSimpleFields(char) {
+            document.querySelectorAll('[data-field]').forEach(el => {
+                const field = el.getAttribute('data-field');
+                if (el.type === 'checkbox') {
+                    el.checked = Boolean(char[field]);
+                } else {
+                    el.value = char[field] !== undefined && char[field] !== null ? char[field] : '';
+                }
+            });
+
+            const inspBtn = document.getElementById('inspirationBtn');
+            const inspDot = document.getElementById('inspirationDot');
+            if (char.inspiration) {
+                inspBtn.style.backgroundColor = 'rgb(var(--accent-500))';
+                inspDot.style.transform = 'translateX(1.5rem)';
+            } else {
+                inspBtn.style.backgroundColor = '#334155';
+                inspDot.style.transform = 'translateX(0.25rem)';
+            }
+        }
+
+        function updateComputedStats(char) {
+            const prof = getProficiencyBonus(char.level);
+            document.getElementById('profBonusDisplay').textContent = formatMod(prof);
+
+            const initTotal = getMod(char.attributes.dex) + (parseInt(char.initBonus) || 0);
+            document.getElementById('initiativeDisplay').textContent = formatMod(initTotal);
+
+            const perceptionTotal = getSkillTotal(char, 'wis', 'perception');
+            document.getElementById('passivePerceptionDisplay').textContent = 10 + perceptionTotal;
+
+            const hpCur = parseInt(char.hpCurrent) || 0;
+            const hpMax = parseInt(char.hpMax) || 0;
+            const bloodiedBadge = document.getElementById('bloodiedBadge');
+            if (hpMax > 0 && hpCur <= Math.floor(hpMax / 2)) {
+                bloodiedBadge.classList.remove('hidden');
+            } else {
+                bloodiedBadge.classList.add('hidden');
+            }
+
+            const dcEl = document.getElementById('spellSaveDcDisplay');
+            const atkEl = document.getElementById('spellAttackDisplay');
+            if (!char.spellcastingAbility || char.spellcastingAbility === 'none') {
+                dcEl.textContent = '—';
+                atkEl.textContent = '—';
+            } else {
+                const spellMod = getMod(char.attributes[char.spellcastingAbility]);
+                dcEl.textContent = 8 + prof + spellMod;
+                atkEl.textContent = formatMod(prof + spellMod);
+            }
+        }
+
+        function renderDeathSaves(char) {
+            if (!char.deathSaves) {
+                char.deathSaves = { successes: [false, false, false], failures: [false, false, false] };
+            }
+            const renderDots = (type, colorHex) => [0, 1, 2].map(i => {
+                const active = char.deathSaves[type][i];
+                return `<button type="button" onclick="toggleDeathSave('${type}', ${i})"
+                    class="rounded-full"
+                    style="width: 1.15rem; height: 1.15rem; background-color: ${active ? colorHex : 'var(--bg-panel)'}; border: 1.5px solid ${active ? colorHex : 'var(--border-strong)'};">
+                </button>`;
+            }).join('');
+
+            document.getElementById('deathSuccessesContainer').innerHTML = renderDots('successes', '#10b981');
+            document.getElementById('deathFailuresContainer').innerHTML = renderDots('failures', '#ef4444');
+        }
+
+        function renderAttributesAndSkills(char) {
+            const grid = document.getElementById('attributesGrid');
+            const profBonus = getProficiencyBonus(char.level);
+
+            grid.innerHTML = ATTRIBUTES_CONFIG.map(attr => {
+                const score = parseInt(char.attributes[attr.key]) || 10;
+                const mod = getMod(score);
+                const saveProf = Boolean(char.savingThrows[attr.key]);
+                const saveTotal = mod + (saveProf ? profBonus : 0);
+
+                const skillsHtml = attr.skills.map(sk => {
+                    const profLevel = char.skills[sk.key] || 0;
+                    const total = getSkillTotal(char, attr.key, sk.key);
+                    let badgeIcon = '○';
+                    let badgeStyle = 'color: var(--text-muted); border: 1px solid var(--border-strong); background: var(--bg-panel);';
+                    if (profLevel === 1) {
+                        badgeIcon = '●';
+                        badgeStyle = 'color: rgb(var(--accent-400)); border: 1px solid rgb(var(--accent-500)); background: rgb(var(--accent-500) / 0.15);';
+                    } else if (profLevel === 2) {
+                        badgeIcon = '★';
+                        badgeStyle = 'color: #10b981; border: 1px solid #10b981; background: rgba(16, 185, 129, 0.15);';
+                    }
+
+                    return `
+                        <div class="flex items-center justify-between py-1 px-1.5 rounded-lg">
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="cycleSkillProf('${sk.key}')" title="Alternar Proficiência / Especialização"
+                                    class="rounded-full text-xs flex items-center justify-center font-bold"
+                                    style="width: 1.55rem; height: 1.55rem; ${badgeStyle}">
+                                    ${badgeIcon}
+                                </button>
+                                <span class="text-xs sm:text-sm text-slate-300">${sk.label}</span>
+                            </div>
+                            <button type="button" onclick="rollD20('${sk.label}', ${total})"
+                                class="roll-btn px-2.5 py-1 rounded-lg text-xs font-bold text-slate-100">
+                                ${formatMod(total)}
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="bg-slatepanel arcane-border rounded-2xl p-4 flex flex-col justify-between space-y-3">
+                        <div class="flex items-center justify-between pb-2.5" style="border-bottom: 1px solid var(--border-subtle);">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-amber-400 block">${attr.abbr}</span>
+                                <h3 class="font-display font-bold text-base m-0">${attr.label}</h3>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="text-center">
+                                    <label class="block text-[9px] uppercase text-slate-400">Valor</label>
+                                    <input type="number" min="1" max="30" value="${score}" onchange="updateAttribute('${attr.key}', this.value)"
+                                        class="w-12 py-1 text-center text-sm font-bold">
+                                </div>
+                                <button type="button" onclick="rollD20('Teste de ${attr.label}', ${mod})" title="Rolar Teste de ${attr.label}"
+                                    class="roll-btn px-3 py-1.5 rounded-xl text-lg font-display font-extrabold text-amber-400">
+                                    ${formatMod(mod)}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between bg-slatecard px-2.5 py-1.5 rounded-xl" style="border: 1px solid var(--border-subtle);">
+                            <label class="flex items-center gap-2 text-xs font-semibold text-slate-300 cursor-pointer">
+                                <input type="checkbox" ${saveProf ? 'checked' : ''} onchange="toggleSavingThrow('${attr.key}')">
+                                <span>Salvaguarda</span>
+                            </label>
+                            <button type="button" onclick="rollD20('Salvaguarda de ${attr.label}', ${saveTotal})"
+                                class="roll-btn px-2.5 py-0.5 rounded-lg text-xs font-bold text-amber-400">
+                                ${formatMod(saveTotal)}
+                            </button>
+                        </div>
+
+                        <div class="space-y-1">
+                            ${skillsHtml || '<p class="text-[11px] text-slate-400 italic text-center py-2 m-0">Sem perícias associadas</p>'}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.style.borderBottomColor = 'transparent';
+                btn.classList.remove('text-amber-400', 'font-bold');
+                btn.classList.add('text-slate-400');
+            });
+
+            const content = document.getElementById(`tabContent-${tabName}`);
+            const btn = document.getElementById(`tabBtn-${tabName}`);
+            if (content) content.classList.remove('hidden');
+            if (btn) {
+                btn.style.borderBottomColor = 'rgb(var(--accent-500))';
+                btn.classList.remove('text-slate-400');
+                btn.classList.add('text-amber-400', 'font-bold');
+            }
+        }
+
+        function mobileNavTo(target) {
+            if (target === 'attributes') {
+                const sec = document.getElementById('section-attributes');
+                if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                switchTab(target);
+                const tabsSec = document.getElementById('section-tabs');
+                if (tabsSec) tabsSec.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Armas em Cards Responsivos (Empilháveis no Mobile, Compactos no Desktop)
+        function renderWeapons(char) {
+            const container = document.getElementById('weaponsListContainer');
+            if (!char.weapons || char.weapons.length === 0) {
+                container.innerHTML = `<p class="text-center py-5 text-xs text-slate-400 bg-slatecard rounded-xl m-0" style="border: 1px solid var(--border-subtle);">Nenhuma arma ou ataque cadastrado. Toque em "+ Adicionar Ataque".</p>`;
+                return;
+            }
+
+            container.innerHTML = char.weapons.map((w, idx) => {
+                const atkBonus = parseInt(w.attackBonus) || 0;
+                const selectedMasteryObj = WEAPON_MASTERIES.find(m => m.name === w.mastery) || WEAPON_MASTERIES[0];
+                const masteryOptions = WEAPON_MASTERIES.map(m =>
+                    `<option value="${m.name}" ${w.mastery === m.name ? 'selected' : ''}>${m.name}</option>`
+                ).join('');
+
+                return `
+                    <div class="bg-slatecard rounded-xl p-3 space-y-2.5" style="border: 1px solid var(--border-subtle);">
+                        <div class="flex items-center gap-2">
+                            <input type="text" value="${escapeHtml(w.name)}" onchange="updateWeapon(${idx}, 'name', this.value)"
+                                class="flex-1 px-2.5 py-1.5 text-sm font-bold" placeholder="Nome da arma ou truque...">
+                            <button type="button" onclick="removeWeapon(${idx})" class="px-2.5 py-1.5 rounded-lg bg-red-950/40 text-red-400 text-xs font-bold" style="border: 1px solid rgba(239,68,68,0.3);">✕</button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                            <!-- Acerto -->
+                            <div class="flex items-center justify-between bg-slatepanel px-2.5 py-1.5 rounded-lg" style="border: 1px solid var(--border-subtle);">
+                                <span class="text-xs text-slate-400 font-semibold">Bônus Acerto:</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="number" value="${atkBonus}" onchange="updateWeapon(${idx}, 'attackBonus', parseInt(this.value)||0)"
+                                        class="w-12 text-center py-0.5 text-sm font-bold">
+                                    <button type="button" onclick="rollD20('Ataque: ${escapeHtml(w.name || 'Arma')}', ${atkBonus})"
+                                        class="roll-btn px-2.5 py-1 rounded-lg text-xs font-bold text-amber-400">
+                                        🎲 ${formatMod(atkBonus)}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Dano -->
+                            <div class="flex items-center justify-between bg-slatepanel px-2.5 py-1.5 rounded-lg gap-1.5" style="border: 1px solid var(--border-subtle);">
+                                <input type="text" value="${escapeHtml(w.damage)}" onchange="updateWeapon(${idx}, 'damage', this.value)"
+                                    class="flex-1 px-2 py-0.5 text-sm" placeholder="Dano (ex: 1d8+3)">
+                                <button type="button" onclick="rollDamageFormula('${escapeHtml(w.name || 'Arma')}', '${escapeHtml(w.damage)}')"
+                                    class="roll-btn px-2.5 py-1 rounded-lg text-xs font-bold text-red-400 shrink-0">
+                                    🔥 Dano
+                                </button>
+                            </div>
+
+                            <!-- Maestria 2024 -->
+                            <div>
+                                <select onchange="updateWeapon(${idx}, 'mastery', this.value)" class="w-full px-2.5 py-1.5 text-xs text-amber-400 font-semibold">
+                                    ${masteryOptions}
+                                </select>
+                            </div>
+                        </div>
+
+                        ${w.mastery && w.mastery !== 'Nenhuma' ? `<p class="text-[11px] text-amber-400 m-0 px-1"><strong>Maestria:</strong> ${escapeHtml(selectedMasteryObj.desc)}</p>` : ''}
+
+                        <input type="text" value="${escapeHtml(w.notes)}" onchange="updateWeapon(${idx}, 'notes', this.value)"
+                            class="w-full px-2.5 py-1 text-xs" placeholder="Propriedades (Acuidade, Versátil, Alcance)...">
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderSpellSlots(char) {
+            const container = document.getElementById('spellSlotsGrid');
+            if (!char.spellSlots) char.spellSlots = {};
+
+            let html = '';
+            for (let lvl = 1; lvl <= 9; lvl++) {
+                const slot = char.spellSlots[lvl] || { total: 0, used: 0 };
+                const total = Math.max(0, Math.min(6, parseInt(slot.total) || 0));
+                const used = Math.max(0, Math.min(total, parseInt(slot.used) || 0));
+
+                let checkboxes = '';
+                for (let i = 0; i < total; i++) {
+                    const isUsed = i < used;
+                    checkboxes += `
+                        <button type="button" onclick="toggleSpellSlotUsed(${lvl}, ${i})"
+                            class="rounded"
+                            style="width: 1.15rem; height: 1.15rem; background-color: ${isUsed ? 'rgb(var(--accent-500))' : 'var(--bg-panel)'}; border: 1.5px solid ${isUsed ? 'rgb(var(--accent-400))' : 'var(--border-strong)'};">
+                        </button>
+                    `;
+                }
+
+                html += `
+                    <div class="bg-slatecard rounded-xl p-2 flex flex-col items-center justify-between" style="border: 1px solid var(--border-subtle);">
+                        <div class="flex items-center justify-between w-full mb-1.5">
+                            <span class="text-[11px] font-bold text-amber-400">${lvl}º C.</span>
+                            <input type="number" min="0" max="6" value="${total}" onchange="updateSpellSlotTotal(${lvl}, this.value)"
+                                class="w-10 text-center text-xs py-0.5">
+                        </div>
+                        <div class="flex flex-wrap gap-1 justify-center items-center" style="min-height: 1.3rem;">
+                            ${checkboxes || '<span class="text-[10px] text-slate-400">—</span>'}
+                        </div>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function renderSpells(char) {
+            const container = document.getElementById('spellsListContainer');
+            if (!char.spells || char.spells.length === 0) {
+                container.innerHTML = `<p class="text-center py-5 text-xs text-slate-400 bg-slatecard rounded-xl m-0" style="border: 1px solid var(--border-subtle);">Nenhuma magia adicionada. Toque em "+ Nova Magia".</p>`;
+                return;
+            }
+
+            container.innerHTML = char.spells.map((sp, idx) => `
+                <div class="bg-slatecard rounded-xl p-3 space-y-2" style="border: 1px solid var(--border-subtle);">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <label class="flex items-center gap-1 text-xs font-semibold text-slate-300 cursor-pointer">
+                            <input type="checkbox" ${sp.prepared ? 'checked' : ''} onchange="updateSpell(${idx}, 'prepared', this.checked)">
+                            <span>Prep.</span>
+                        </label>
+                        <select onchange="updateSpell(${idx}, 'level', parseInt(this.value))" class="px-2 py-1 text-xs font-bold">
+                            <option value="0" ${sp.level == 0 ? 'selected' : ''}>Truque</option>
+                            ${[1,2,3,4,5,6,7,8,9].map(l => `<option value="${l}" ${sp.level == l ? 'selected' : ''}>${l}º Círculo</option>`).join('')}
+                        </select>
+                        <input type="text" value="${escapeHtml(sp.name)}" onchange="updateSpell(${idx}, 'name', this.value)"
+                            class="flex-1 px-2.5 py-1 text-sm font-bold" style="min-width: 140px;" placeholder="Nome da magia...">
+                        <button type="button" onclick="updateSpell(${idx}, 'concentration', !${Boolean(sp.concentration)})"
+                            class="px-2 py-1 rounded text-[11px] font-bold"
+                            style="background-color: ${sp.concentration ? 'rgba(56,189,248,0.2)' : 'var(--bg-panel)'}; color: ${sp.concentration ? '#38bdf8' : 'var(--text-muted)'}; border: 1px solid ${sp.concentration ? '#38bdf8' : 'var(--border-strong)'};">
+                            C
+                        </button>
+                        <button type="button" onclick="updateSpell(${idx}, 'ritual', !${Boolean(sp.ritual)})"
+                            class="px-2 py-1 rounded text-[11px] font-bold"
+                            style="background-color: ${sp.ritual ? 'rgba(168,85,247,0.2)' : 'var(--bg-panel)'}; color: ${sp.ritual ? '#c084fc' : 'var(--text-muted)'}; border: 1px solid ${sp.ritual ? '#c084fc' : 'var(--border-strong)'};">
+                            R
+                        </button>
+                        <button type="button" onclick="removeSpell(${idx})" class="px-2 py-1 rounded bg-red-950/40 text-red-400 text-xs font-bold">✕</button>
+                    </div>
+                    <input type="text" value="${escapeHtml(sp.notes)}" onchange="updateSpell(${idx}, 'notes', this.value)"
+                        class="w-full px-2.5 py-1 text-xs" placeholder="Alcance, tempo de conjuração, dano ou efeito...">
+                </div>
+            `).join('');
+        }
+
+        function renderInventoryAndCurrency(char) {
+            const curr = char.currency || { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 };
+            document.querySelectorAll('[data-currency]').forEach(el => {
+                const k = el.getAttribute('data-currency');
+                el.value = curr[k] || 0;
+            });
+
+            const att = char.attunement || ['', '', ''];
+            document.getElementById('attunementContainer').innerHTML = [0, 1, 2].map(i => `
+                <div class="flex items-center gap-2">
+                    <span class="rounded-full text-amber-400 text-[10px] font-bold flex items-center justify-center shrink-0"
+                        style="width: 1.35rem; height: 1.35rem; background-color: rgb(var(--accent-500) / 0.15); border: 1px solid rgb(var(--accent-500) / 0.35);">${i + 1}</span>
+                    <input type="text" value="${escapeHtml(att[i] || '')}" onchange="updateAttunement(${i}, this.value)"
+                        class="w-full px-2.5 py-1.5 text-xs" placeholder="Item mágico sintonizado...">
+                </div>
+            `).join('');
+
+            const container = document.getElementById('inventoryListContainer');
+            let totalWeight = 0;
+
+            if (!char.inventory || char.inventory.length === 0) {
+                container.innerHTML = `<p class="text-center py-5 text-xs text-slate-400 bg-slatecard rounded-xl m-0" style="border: 1px solid var(--border-subtle);">Mochila vazia. Toque em "+ Adicionar Item".</p>`;
+                document.getElementById('totalWeightDisplay').textContent = '0';
+                return;
+            }
+
+            container.innerHTML = char.inventory.map((item, idx) => {
+                const q = parseFloat(item.qty) || 0;
+                const w = parseFloat(item.weight) || 0;
+                totalWeight += q * w;
+
+                return `
+                    <div class="bg-slatecard rounded-xl p-2.5 space-y-2" style="border: 1px solid var(--border-subtle);">
+                        <div class="flex items-center gap-2">
+                            <input type="number" min="0" value="${q}" onchange="updateInventoryItem(${idx}, 'qty', parseFloat(this.value)||0)"
+                                class="w-14 text-center py-1 text-sm font-bold" title="Quantidade">
+                            <input type="text" value="${escapeHtml(item.name)}" onchange="updateInventoryItem(${idx}, 'name', this.value)"
+                                class="flex-1 px-2.5 py-1 text-sm font-semibold" placeholder="Nome do item...">
+                            <input type="number" step="0.1" min="0" value="${w}" onchange="updateInventoryItem(${idx}, 'weight', parseFloat(this.value)||0)"
+                                class="w-16 text-center py-1 text-xs" placeholder="Peso" title="Peso unitário">
+                            <button type="button" onclick="removeInventoryItem(${idx})" class="px-2 py-1 rounded bg-red-950/40 text-red-400 text-xs font-bold">✕</button>
+                        </div>
+                        <input type="text" value="${escapeHtml(item.notes)}" onchange="updateInventoryItem(${idx}, 'notes', this.value)"
+                            class="w-full px-2.5 py-1 text-xs" placeholder="Notas ou descrição do item...">
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('totalWeightDisplay').textContent = totalWeight.toFixed(1).replace(/\.0$/, '');
+        }
+
+        // ============================================================================
+        // HANDLERS DE INTERAÇÃO
+        // ============================================================================
+        function setupListeners() {
+            document.getElementById('characterSelect').addEventListener('change', (e) => {
+                activeCharId = e.target.value;
+                saveToStorage(false);
+                renderAll();
+                const c = getActiveChar();
+                showToast(`Ficha carregada: ${c.name || 'Ficha sem nome'}`, 'info');
+            });
+
+            document.querySelectorAll('[data-field]').forEach(el => {
+                const eventType = (el.type === 'checkbox' || el.tagName === 'SELECT') ? 'change' : 'input';
+                el.addEventListener(eventType, (e) => {
+                    const char = getActiveChar();
+                    const field = e.target.getAttribute('data-field');
+                    if (e.target.type === 'checkbox') {
+                        char[field] = e.target.checked;
+                    } else if (e.target.type === 'number') {
+                        char[field] = e.target.value === '' ? 0 : parseFloat(e.target.value);
+                    } else {
+                        char[field] = e.target.value;
+                    }
+
+                    if (field === 'name' || field === 'level') {
+                        renderCharacterDropdown();
+                    }
+                    if (field === 'level') {
+                        renderAttributesAndSkills(char);
+                    }
+                    updateComputedStats(char);
+                    saveToStorage();
+                });
+            });
+
+            document.querySelectorAll('[data-currency]').forEach(el => {
+                el.addEventListener('input', (e) => {
+                    const char = getActiveChar();
+                    if (!char.currency) char.currency = { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 };
+                    const k = e.target.getAttribute('data-currency');
+                    char.currency[k] = parseInt(e.target.value) || 0;
+                    saveToStorage();
+                });
+            });
+        }
+
+        function toggleInspiration() {
+            const char = getActiveChar();
+            char.inspiration = !char.inspiration;
+            populateSimpleFields(char);
+            saveToStorage();
+            if (char.inspiration) {
+                playBardicChord([329.63, 415.30, 493.88, 659.25], 0.055, 0.9, 0.13);
+            }
+        }
+
+        function adjustHP(delta) {
+            const char = getActiveChar();
+            const max = parseInt(char.hpMax) || 1;
+            let cur = parseInt(char.hpCurrent) || 0;
+            cur = Math.max(0, Math.min(max, cur + delta));
+            char.hpCurrent = cur;
+            populateSimpleFields(char);
+            updateComputedStats(char);
+            saveToStorage();
+        }
+
+        function spendHitDie() {
+            const char = getActiveChar();
+            let cur = parseInt(char.hitDiceCurrent) || 0;
+            if (cur <= 0) {
+                showToast('Você não possui Dados de Vida disponíveis!', 'error');
+                return;
+            }
+            char.hitDiceCurrent = cur - 1;
+            populateSimpleFields(char);
+            saveToStorage();
+
+            const match = (char.hitDiceTotal || '1d8').match(/d(\d+)/i);
+            const sides = match ? parseInt(match[1]) : 8;
+            const conMod = getMod(char.attributes.con);
+            rollCustomDie(sides, conMod, 'Dado de Vida (Cura)');
+        }
+
+        function toggleDeathSave(type, index) {
+            const char = getActiveChar();
+            char.deathSaves[type][index] = !char.deathSaves[type][index];
+            renderDeathSaves(char);
+            saveToStorage();
+        }
+
+        function updateAttribute(attrKey, value) {
+            const char = getActiveChar();
+            char.attributes[attrKey] = Math.max(1, Math.min(30, parseInt(value) || 10));
+            renderAttributesAndSkills(char);
+            updateComputedStats(char);
+            saveToStorage();
+        }
+
+        function toggleSavingThrow(attrKey) {
+            const char = getActiveChar();
+            char.savingThrows[attrKey] = !char.savingThrows[attrKey];
+            renderAttributesAndSkills(char);
+            saveToStorage();
+        }
+
+        function cycleSkillProf(skillKey) {
+            const char = getActiveChar();
+            const current = char.skills[skillKey] || 0;
+            char.skills[skillKey] = (current + 1) % 3;
+            renderAttributesAndSkills(char);
+            updateComputedStats(char);
+            saveToStorage();
+        }
+
+        function addWeapon() {
+            const char = getActiveChar();
+            char.weapons.push({ name: '', attackBonus: 0, damage: '', mastery: 'Nenhuma', notes: '' });
+            renderWeapons(char);
+            saveToStorage();
+        }
+        function updateWeapon(idx, field, val) {
+            const char = getActiveChar();
+            char.weapons[idx][field] = val;
+            if (field === 'attackBonus' || field === 'name' || field === 'mastery' || field === 'damage') {
+                renderWeapons(char);
+            }
+            saveToStorage();
+        }
+        function removeWeapon(idx) {
+            const char = getActiveChar();
+            char.weapons.splice(idx, 1);
+            renderWeapons(char);
+            saveToStorage();
+        }
+
+        function updateSpellSlotTotal(lvl, val) {
+            const char = getActiveChar();
+            const total = Math.max(0, Math.min(6, parseInt(val) || 0));
+            if (!char.spellSlots[lvl]) char.spellSlots[lvl] = { total: 0, used: 0 };
+            char.spellSlots[lvl].total = total;
+            if (char.spellSlots[lvl].used > total) char.spellSlots[lvl].used = total;
+            renderSpellSlots(char);
+            saveToStorage();
+        }
+        function toggleSpellSlotUsed(lvl, slotIdx) {
+            const char = getActiveChar();
+            const slot = char.spellSlots[lvl];
+            slot.used = (slotIdx < slot.used) ? slotIdx : slotIdx + 1;
+            renderSpellSlots(char);
+            saveToStorage();
+        }
+        function addSpell() {
+            const char = getActiveChar();
+            char.spells.push({ level: 1, name: '', prepared: true, concentration: false, ritual: false, notes: '' });
+            renderSpells(char);
+            saveToStorage();
+        }
+        function updateSpell(idx, field, val) {
+            const char = getActiveChar();
+            char.spells[idx][field] = val;
+            renderSpells(char);
+            saveToStorage();
+        }
+        function removeSpell(idx) {
+            const char = getActiveChar();
+            char.spells.splice(idx, 1);
+            renderSpells(char);
+            saveToStorage();
+        }
+
+        function updateAttunement(idx, val) {
+            const char = getActiveChar();
+            if (!char.attunement) char.attunement = ['', '', ''];
+            char.attunement[idx] = val;
+            saveToStorage();
+        }
+        function addInventoryItem() {
+            const char = getActiveChar();
+            char.inventory.push({ qty: 1, name: '', weight: 0, notes: '' });
+            renderInventoryAndCurrency(char);
+            saveToStorage();
+        }
+        function updateInventoryItem(idx, field, val) {
+            const char = getActiveChar();
+            char.inventory[idx][field] = val;
+            renderInventoryAndCurrency(char);
+            saveToStorage();
+        }
+        function removeInventoryItem(idx) {
+            const char = getActiveChar();
+            char.inventory.splice(idx, 1);
+            renderInventoryAndCurrency(char);
+            saveToStorage();
+        }
+
+        // ============================================================================
+        // GERENCIAMENTO DE FICHAS & BACKUP JSON
+        // ============================================================================
+        function createNewCharacter() {
+            const newChar = createBlankCharacter();
+            characters.push(newChar);
+            activeCharId = newChar.id;
+            saveToStorage();
+            renderAll();
+            showToast('Nova ficha em branco criada!', 'success');
+        }
+
+        function requestDeleteCharacter() {
+            const char = getActiveChar();
+            const displayName = (char.name && char.name.trim()) ? char.name.trim() : 'Ficha sem nome';
+            showConfirmModal(
+                'Excluir Personagem',
+                `Tem certeza que deseja excluir permanentemente "${displayName}" deste dispositivo?`,
+                () => {
+                    characters = characters.filter(c => c.id !== char.id);
+                    if (characters.length === 0) characters.push(createBlankCharacter());
+                    activeCharId = characters[0].id;
+                    saveToStorage();
+                    renderAll();
+                    showToast('Ficha excluída.', 'info');
+                }
+            );
+        }
+
+        function exportCharacterJSON() {
+            const char = getActiveChar();
+            const dataStr = JSON.stringify(char, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const safeName = (char.name || 'personagem').toLowerCase().replace(/[^a-z0-9]/gi, '_');
+            a.href = url;
+            a.download = `dnd55_${safeName}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Backup JSON exportado!', 'success');
+        }
+
+        function importCharacterJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (!imported || typeof imported !== 'object' || !imported.attributes) {
+                        throw new Error('Formato inválido');
+                    }
+                    imported.id = 'char_' + Date.now();
+                    characters.push(imported);
+                    activeCharId = imported.id;
+                    saveToStorage();
+                    renderAll();
+                    showToast(`Personagem "${imported.name || 'Importado'}" carregado!`, 'success');
+                } catch (err) {
+                    showToast('Arquivo JSON inválido ou corrompido.', 'error');
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        // ============================================================================
+        // ROLADOR DE DADOS & ANIMAÇÃO POLIEDRO
+        // ============================================================================
+        function toggleDiceDrawer() {
+            document.getElementById('diceDrawer').classList.toggle('hidden');
+        }
+
+        function setRollMode(mode) {
+            rollMode = mode;
+            ['normal', 'adv', 'dis'].forEach(m => {
+                const btn = document.getElementById(`mode-${m}`);
+                if (m === mode) {
+                    btn.style.backgroundColor = 'rgb(var(--accent-600))';
+                    btn.style.color = '#ffffff';
+                } else {
+                    btn.style.backgroundColor = 'transparent';
+                    btn.style.color = 'var(--text-muted)';
+                }
+            });
+        }
+
+        function rollDie(sides) {
+            return Math.floor(Math.random() * sides) + 1;
+        }
+
+        function triggerDiceAnimation({ label, finalValue, maxDie, formula, modeText, isCrit, isFumble }) {
+            const overlay = document.getElementById('diceRollOverlay');
+            const card = document.getElementById('diceOverlayCard');
+            const svg = document.getElementById('diceOverlaySvg');
+            const numEl = document.getElementById('diceOverlayNumber');
+            const labelEl = document.getElementById('diceOverlayLabel');
+            const modeBadge = document.getElementById('diceOverlayModeBadge');
+            const formulaEl = document.getElementById('diceOverlayFormula');
+            const critBanner = document.getElementById('diceOverlayCritBanner');
+
+            clearInterval(diceAnimInterval);
+
+            labelEl.textContent = label;
+            modeBadge.textContent = modeText;
+            formulaEl.textContent = 'Rolando...';
+            critBanner.classList.add('hidden');
+            card.classList.remove('animate-fumble');
+            svg.classList.remove('animate-crit');
+            svg.style.color = 'rgb(var(--accent-400))';
+            numEl.style.color = '#ffffff';
+
+            svg.classList.remove('animate-dice-roll');
+            void svg.offsetWidth;
+            svg.classList.add('animate-dice-roll');
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+
+            playDiceRollSound();
+
+            let ticks = 0;
+            const totalTicks = 12;
+            diceAnimInterval = setInterval(() => {
+                ticks++;
+                numEl.textContent = rollDie(maxDie || 20);
+                if (ticks >= totalTicks) {
+                    clearInterval(diceAnimInterval);
+                    numEl.textContent = finalValue;
+                    formulaEl.textContent = formula;
+
+                    if (isCrit) {
+                        svg.style.color = '#34d399';
+                        svg.classList.add('animate-crit');
+                        numEl.style.color = '#34d399';
+                        critBanner.textContent = '✨ Crítico Natural (20)!';
+                        critBanner.className = 'text-xs font-display font-extrabold uppercase tracking-widest py-1 px-3 rounded-lg mx-auto mt-2 bg-emerald-950/70 text-emerald-400';
+                        critBanner.style.border = '1px solid rgba(16, 185, 129, 0.45)';
+                        playCriticalFanfare();
+                    } else if (isFumble) {
+                        svg.style.color = '#f87171';
+                        numEl.style.color = '#f87171';
+                        card.classList.add('animate-fumble');
+                        critBanner.textContent = '💀 Falha Crítica (1)!';
+                        critBanner.className = 'text-xs font-display font-extrabold uppercase tracking-widest py-1 px-3 rounded-lg mx-auto mt-2 bg-red-950/70 text-red-400';
+                        critBanner.style.border = '1px solid rgba(239, 68, 68, 0.45)';
+                        playFumbleChord();
+                    }
+                }
+            }, 45);
+        }
+
+        function closeDiceOverlay() {
+            clearInterval(diceAnimInterval);
+            const overlay = document.getElementById('diceRollOverlay');
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+        }
+
+        function rollD20(label, modifier = 0) {
+            const d1 = rollDie(20);
+            const d2 = rollDie(20);
+            let chosen = d1;
+            let detailText = `d20 (${d1})`;
+            let modeText = 'Rolagem Normal';
+
+            if (rollMode === 'adv') {
+                chosen = Math.max(d1, d2);
+                detailText = `2d20 Vantagem [${d1}, ${d2}] → ${chosen}`;
+                modeText = 'Com Vantagem';
+            } else if (rollMode === 'dis') {
+                chosen = Math.min(d1, d2);
+                detailText = `2d20 Desvantagem [${d1}, ${d2}] → ${chosen}`;
+                modeText = 'Com Desvantagem';
+            }
+
+            const total = chosen + modifier;
+            const isCrit = chosen === 20;
+            const isFumble = chosen === 1;
+            const formula = `${detailText} ${modifier >= 0 ? '+' : '-'} ${Math.abs(modifier)} = ${total}`;
+
+            triggerDiceAnimation({ label, finalValue: total, maxDie: 20, formula, modeText, isCrit, isFumble });
+            addDiceLog({ label, total, formula: `${detailText} ${modifier >= 0 ? '+' : '-'} ${Math.abs(modifier)}`, isCrit, isFumble });
+        }
+
+        function rollCustomDie(sides, modifier = 0, customLabel = null) {
+            if (sides === 20 && modifier === 0 && !customLabel) {
+                rollD20('Rolagem d20', 0);
+                return;
+            }
+            const rolled = rollDie(sides);
+            const total = rolled + modifier;
+            const modStr = modifier !== 0 ? ` ${modifier >= 0 ? '+' : '-'} ${Math.abs(modifier)}` : '';
+            const label = customLabel || `Rolagem d${sides}`;
+            const formula = `1d${sides} (${rolled})${modStr} = ${total}`;
+
+            triggerDiceAnimation({
+                label,
+                finalValue: total,
+                maxDie: sides,
+                formula,
+                modeText: `Dado d${sides}`,
+                isCrit: sides === 20 && rolled === 20,
+                isFumble: sides === 20 && rolled === 1
+            });
+
+            addDiceLog({
+                label,
+                total,
+                formula: `1d${sides} (${rolled})${modStr}`,
+                isCrit: sides === 20 && rolled === 20,
+                isFumble: sides === 20 && rolled === 1
+            });
+        }
+
+        function rollDamageFormula(weaponName, damageStr) {
+            const match = (damageStr || '').match(/(\d+)\s*d\s*(\d+)\s*([+-]\s*\d+)?/i);
+            if (!match) {
+                showToast('Informe uma fórmula de dano válida (ex: 1d8+3).', 'info');
+                return;
+            }
+            const count = Math.min(20, Math.max(1, parseInt(match[1])));
+            const sides = parseInt(match[2]);
+            const mod = match[3] ? parseInt(match[3].replace(/\s+/g, '')) : 0;
+
+            let rolls = [];
+            let sum = 0;
+            for (let i = 0; i < count; i++) {
+                const r = rollDie(sides);
+                rolls.push(r);
+                sum += r;
+            }
+            const total = sum + mod;
+            const modStr = mod !== 0 ? ` ${mod >= 0 ? '+' : '-'} ${Math.abs(mod)}` : '';
+            const label = `Dano: ${weaponName}`;
+            const formula = `${count}d${sides} [${rolls.join(', ')}]${modStr} = ${total}`;
+
+            triggerDiceAnimation({ label, finalValue: total, maxDie: sides, formula, modeText: 'Rolagem de Dano', isCrit: false, isFumble: false });
+            addDiceLog({ label, total, formula: `${count}d${sides} [${rolls.join(', ')}]${modStr}`, isCrit: false, isFumble: false });
+        }
+
+        function rollInitiative() {
+            const char = getActiveChar();
+            const initTotal = getMod(char.attributes.dex) + (parseInt(char.initBonus) || 0);
+            rollD20('Iniciativa', initTotal);
+        }
+
+        function rollSpellAttack() {
+            const char = getActiveChar();
+            if (!char.spellcastingAbility || char.spellcastingAbility === 'none') {
+                showToast('Selecione um Atributo de Conjuração primeiro!', 'info');
+                return;
+            }
+            const bonus = getProficiencyBonus(char.level) + getMod(char.attributes[char.spellcastingAbility]);
+            rollD20('Ataque Mágico', bonus);
+        }
+
+        function addDiceLog(entry) {
+            diceLogs.unshift(entry);
+            if (diceLogs.length > 20) diceLogs.pop();
+
+            ['lastRollBadgeDesktop', 'lastRollBadgeMobile'].forEach(id => {
+                const b = document.getElementById(id);
+                if (b) {
+                    b.textContent = entry.total;
+                    b.classList.remove('hidden');
+                }
+            });
+            renderDiceLogs();
+        }
+
+        function renderDiceLogs() {
+            const container = document.getElementById('diceLogContainer');
+            if (diceLogs.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-3">Nenhuma rolagem recente.</p>`;
+                return;
+            }
+
+            container.innerHTML = diceLogs.map((log, i) => {
+                let totalColor = 'text-amber-400';
+                if (log.isCrit) totalColor = 'text-emerald-400';
+                if (log.isFumble) totalColor = 'text-red-400';
+
+                return `
+                    <div class="p-2 rounded-xl bg-slatecard flex items-center justify-between" style="border: 1px solid ${i === 0 ? 'rgb(var(--accent-500) / 0.5)' : 'var(--border-subtle)'};">
+                        <div>
+                            <div class="text-xs font-bold">${escapeHtml(log.label)}</div>
+                            <div class="text-[11px] text-slate-400">${escapeHtml(log.formula)}</div>
+                        </div>
+                        <div class="text-lg font-display font-extrabold ${totalColor} pl-2">
+                            ${log.total}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function clearDiceLog() {
+            diceLogs = [];
+            ['lastRollBadgeDesktop', 'lastRollBadgeMobile'].forEach(id => {
+                const b = document.getElementById(id);
+                if (b) b.classList.add('hidden');
+            });
+            renderDiceLogs();
+        }
+
+        // ============================================================================
+        // GOOGLE DRIVE LINK, TEMA MITOLÓGICO & PALETA DE CORES
+        // ============================================================================
+        function loadDriveUrl() {
+            const savedUrl = localStorage.getItem(DRIVE_URL_KEY) || DEFAULT_DRIVE_URL;
+            const linkEl = document.getElementById('driveBookLink');
+            const inputEl = document.getElementById('driveUrlInput');
+            if (linkEl) linkEl.href = savedUrl;
+            if (inputEl) inputEl.value = savedUrl === DEFAULT_DRIVE_URL ? '' : savedUrl;
+        }
+
+        function toggleDriveConfig() {
+            const panel = document.getElementById('driveConfigPanel');
+            if (panel) panel.classList.toggle('hidden');
+        }
+
+        function saveDriveUrl() {
+            const inputEl = document.getElementById('driveUrlInput');
+            const rawUrl = (inputEl?.value || '').trim();
+            const finalUrl = rawUrl ? (rawUrl.startsWith('http') ? rawUrl : 'https://' + rawUrl) : DEFAULT_DRIVE_URL;
+            localStorage.setItem(DRIVE_URL_KEY, finalUrl);
+            loadDriveUrl();
+            toggleDriveConfig();
+            showToast('Link do Google Drive atualizado!', 'success');
+        }
+
+        function initAppearance() {
+            isLightMode = localStorage.getItem(THEME_MODE_KEY) === 'light';
+            applyThemeMode();
+
+            const savedAccent = localStorage.getItem(ACCENT_COLOR_KEY) || 'gold';
+            applyAccentColor(savedAccent, false);
+            renderAccentSwatches();
+
+            document.addEventListener('click', (e) => {
+                const menu = document.getElementById('accentPickerMenu');
+                const btn = document.getElementById('accentPickerBtn');
+                if (menu && !menu.classList.contains('hidden') && !menu.contains(e.target) && !btn.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        }
+
+        function toggleThemeMode() {
+            isLightMode = !isLightMode;
+            localStorage.setItem(THEME_MODE_KEY, isLightMode ? 'light' : 'dark');
+            applyThemeMode();
+            playBardicChord(isLightMode ? [392.00, 493.88, 587.33] : [293.66, 349.23, 440.00], 0.05, 0.6, 0.09);
+            showToast(isLightMode ? 'Alvorada de Lathander (Modo Claro)' : 'Noite de Selûne (Modo Escuro)', 'info');
+        }
+
+        function applyThemeMode() {
+            const htmlEl = document.documentElement;
+            const iconContainer = document.getElementById('mythicThemeIcon');
+            const labelEl = document.getElementById('mythicThemeLabel');
+
+            if (isLightMode) {
+                htmlEl.classList.remove('dark');
+                htmlEl.classList.add('light-theme');
+                if (iconContainer) iconContainer.innerHTML = LATHANDER_SVG;
+                if (labelEl) labelEl.textContent = 'Lathander';
+            } else {
+                htmlEl.classList.remove('light-theme');
+                htmlEl.classList.add('dark');
+                if (iconContainer) iconContainer.innerHTML = SELUNE_SVG;
+                if (labelEl) labelEl.textContent = 'Selûne';
+            }
+        }
+
+        function toggleAccentMenu() {
+            const menu = document.getElementById('accentPickerMenu');
+            if (menu) menu.classList.toggle('hidden');
+        }
+
+        function renderAccentSwatches() {
+            const grid = document.getElementById('accentSwatchesGrid');
+            if (!grid) return;
+
+            grid.innerHTML = ACCENT_THEMES.map(theme => {
+                const isSelected = theme.id === currentAccentId;
+                return `
+                    <button type="button" onclick="applyAccentColor('${theme.id}', true)"
+                        class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-left text-xs font-medium"
+                        style="background-color: ${isSelected ? 'rgb(var(--accent-500) / 0.18)' : 'var(--bg-card)'}; border: 1px solid ${isSelected ? 'rgb(var(--accent-400))' : 'var(--border-subtle)'}; color: ${isSelected ? 'rgb(var(--accent-400))' : 'var(--text-secondary)'};">
+                        <span class="rounded-full shrink-0" style="width: 0.85rem; height: 0.85rem; background-color: ${theme.swatch}; border: 1px solid rgba(255,255,255,0.35);"></span>
+                        <span class="truncate text-[11px]">${theme.name.split(' ')[0]}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function applyAccentColor(themeId, notify = true) {
+            const theme = ACCENT_THEMES.find(t => t.id === themeId) || ACCENT_THEMES[0];
+            currentAccentId = theme.id;
+            localStorage.setItem(ACCENT_COLOR_KEY, theme.id);
+
+            const root = document.documentElement;
+            root.style.setProperty('--accent-200', theme.c200);
+            root.style.setProperty('--accent-300', theme.c300);
+            root.style.setProperty('--accent-400', theme.c400);
+            root.style.setProperty('--accent-500', theme.c500);
+            root.style.setProperty('--accent-600', theme.c600);
+            root.style.setProperty('--accent-700', theme.c700);
+            root.style.setProperty('--accent-900', theme.c900);
+
+            renderAccentSwatches();
+
+            if (notify) {
+                toggleAccentMenu();
+                showToast(`Cor alterada para ${theme.name}!`, 'info');
+            }
+        }
+
+        // ============================================================================
+        // UTILITÁRIOS DE UI
+        // ============================================================================
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const bgMap = {
+                success: 'background-color: #064e3b; border: 1px solid #10b981; color: #ecfdf5;',
+                error: 'background-color: #7f1d1d; border: 1px solid #ef4444; color: #fef2f2;',
+                info: 'background-color: var(--bg-panel); border: 1px solid rgb(var(--accent-500)); color: var(--text-primary);'
+            };
+            const toast = document.createElement('div');
+            toast.className = 'px-3.5 py-2 rounded-xl shadow-xl text-xs font-semibold';
+            toast.style.cssText = `pointer-events: auto; ${bgMap[type] || bgMap.info}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.25s ease';
+                setTimeout(() => toast.remove(), 260);
+            }, 2800);
+        }
+
+        function showConfirmModal(title, message, onConfirm) {
+            const modal = document.getElementById('confirmModal');
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            const close = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            };
+
+            document.getElementById('confirmCancelBtn').onclick = close;
+            document.getElementById('confirmOkBtn').onclick = () => {
+                close();
+                onConfirm();
+            };
+        }
+
+        // ============================================================================
+        // INICIALIZAÇÃO
+        // ============================================================================
+        window.addEventListener('DOMContentLoaded', () => {
+            initAppearance();
+            loadFromStorage();
+            loadDriveUrl();
+            setupListeners();
+            renderAll();
+        });
+    </script>
+</body>
+</html>
