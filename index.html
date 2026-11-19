@@ -7,12 +7,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Grimório 5.5 — Ficha Virtual D&D (Regras 2024)</title>
 
-    <!-- Fontes Google (Opcional - fallback nativo garantido offline) -->
+    <!-- Fontes Google (com fallback nativo offline) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS (Opcional - CSS autossuficiente completo abaixo garante funcionamento 100% offline/iOS Quick Look) -->
+    <!-- SDK Oficial Supabase JS v2 (com fallback gracioso offline-first) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Tailwind CSS (complementado por CSS autossuficiente completo abaixo) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         if (window.tailwind) {
@@ -80,11 +83,9 @@
         }
 
         /* ==========================================================================
-           2. RESET & CSS AUTOSSUFICIENTE (FUNCIONA 100% SEM INTERNET E NO iOS QUICK LOOK)
+           2. RESET & CSS AUTOSSUFICIENTE (DESKTOP, ANDROID & iOS SAFARI/QUICK LOOK)
            ========================================================================== */
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { box-sizing: border-box; }
 
         html, body {
             margin: 0;
@@ -99,18 +100,13 @@
 
         body {
             min-height: 100vh;
-            padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+            padding-bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
+        .font-display { font-family: 'Cinzel', Georgia, 'Times New Roman', serif; }
 
-        .font-display {
-            font-family: 'Cinzel', Georgia, 'Times New Roman', serif;
-        }
-
-        /* Utilitários estruturais autossuficientes */
+        /* Utilitários estruturais */
         .flex { display: flex; }
         .inline-flex { display: inline-flex; }
         .grid { display: grid; }
@@ -148,11 +144,13 @@
         .gap-2\.5 { gap: 0.625rem; }
         .gap-3 { gap: 0.75rem; }
         .gap-4 { gap: 1rem; }
+        .gap-5 { gap: 1.25rem; }
         .gap-6 { gap: 1.5rem; }
 
         .space-y-1 > * + * { margin-top: 0.25rem; }
         .space-y-1\.5 > * + * { margin-top: 0.375rem; }
         .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-2\.5 > * + * { margin-top: 0.625rem; }
         .space-y-3 > * + * { margin-top: 0.75rem; }
         .space-y-4 > * + * { margin-top: 1rem; }
         .space-y-5 > * + * { margin-top: 1.25rem; }
@@ -169,6 +167,7 @@
         .p-2 { padding: 0.5rem; }
         .p-2\.5 { padding: 0.625rem; }
         .p-3 { padding: 0.75rem; }
+        .p-3\.5 { padding: 0.875rem; }
         .p-4 { padding: 1rem; }
         .p-6 { padding: 1.5rem; }
         .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
@@ -183,7 +182,6 @@
         .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
         .py-2\.5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
         .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
-        .py-3\.5 { padding-top: 0.875rem; padding-bottom: 0.875rem; }
 
         .rounded { border-radius: 0.25rem; }
         .rounded-lg { border-radius: 0.5rem; }
@@ -201,7 +199,6 @@
         .text-xl { font-size: 1.25rem; }
         .text-2xl { font-size: 1.5rem; }
         .text-3xl { font-size: 1.875rem; }
-        .text-4xl { font-size: 2.25rem; }
 
         .font-medium { font-weight: 500; }
         .font-semibold { font-weight: 600; }
@@ -257,7 +254,7 @@
         html.light-theme #diceOverlayNumber.text-white { color: #ffffff !important; }
         html.light-theme ::placeholder { color: #78716c !important; opacity: 1; }
 
-        /* Inputs, Selects e Botões otimizados para Toque e iOS Safari (>=16px no mobile evita zoom) */
+        /* Inputs, Selects e Botões (>=16px no mobile evita zoom automático no iOS Safari) */
         input, select, textarea {
             background-color: var(--bg-card);
             color: var(--text-primary);
@@ -277,9 +274,7 @@
             -webkit-appearance: none;
             margin: 0;
         }
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
+        input[type="number"] { -moz-appearance: textfield; }
         input[type="checkbox"] {
             width: 1.1rem;
             height: 1.1rem;
@@ -303,9 +298,7 @@
             border-color: rgb(var(--accent-400));
             background-color: rgb(var(--accent-500) / 0.15);
         }
-        .roll-btn:active {
-            transform: scale(0.96);
-        }
+        .roll-btn:active { transform: scale(0.96); }
 
         /* Header e Container Principal */
         header {
@@ -375,7 +368,7 @@
         /* Gaveta Flutuante de Dados */
         #diceWidgetWrapper {
             position: fixed;
-            bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+            bottom: calc(4.85rem + env(safe-area-inset-bottom, 0px));
             right: 0.75rem;
             left: 0.75rem;
             z-index: 45;
@@ -408,30 +401,32 @@
             background-color: var(--bg-panel);
             border-top: 1px solid rgb(var(--accent-500) / 0.35);
             display: grid;
-            grid-template-columns: repeat(6, minmax(0, 1fr));
-            padding: 0.35rem 0.25rem calc(0.35rem + env(safe-area-inset-bottom, 0px));
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            padding: 0.35rem 0.15rem calc(0.35rem + env(safe-area-inset-bottom, 0px));
             box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Barra de Progresso de PV na Visão do Mestre */
+        .hp-bar-track {
+            width: 100%;
+            height: 0.5rem;
+            background-color: rgba(148, 163, 184, 0.2);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .hp-bar-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.35s ease, background-color 0.35s ease;
         }
 
         /* Responsividade Desktop (>= 768px) */
         @media (min-width: 768px) {
-            body {
-                padding-bottom: 5rem;
-            }
-            input, select, textarea {
-                font-size: 0.875rem;
-            }
-            #mobileBottomNav {
-                display: none !important;
-            }
-            #diceWidgetWrapper {
-                bottom: 1.25rem;
-                right: 1.25rem;
-                left: auto;
-            }
-            #desktopDiceFab {
-                display: inline-flex;
-            }
+            body { padding-bottom: 5rem; }
+            input, select, textarea { font-size: 0.875rem; }
+            #mobileBottomNav { display: none !important; }
+            #diceWidgetWrapper { bottom: 1.25rem; right: 1.25rem; left: auto; }
+            #desktopDiceFab { display: inline-flex; }
             .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .md\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
@@ -503,15 +498,13 @@
                 <span id="diceOverlayNumber" class="font-display">20</span>
             </div>
 
-            <!-- Banner Crítico / Falha -->
             <div id="diceOverlayCritBanner" class="hidden text-xs font-display font-extrabold uppercase tracking-widest py-1 px-3 rounded-lg mx-auto mt-2"></div>
 
-            <!-- Fórmula Detalhada -->
             <p id="diceOverlayFormula" class="text-xs text-slate-300 font-medium mt-3 bg-slatecard rounded-xl py-2 px-3" style="border: 1px solid var(--border-subtle);">
                 d20 (15) + 3 = 18
             </p>
 
-            <button type="button" onclick="closeDiceOverlay()" class="mt-4 px-4 py-1.5 rounded-lg bg-slatecard text-[11px] text-slate-400 hover:text-amber-400 uppercase tracking-wider font-semibold">
+            <button type="button" onclick="closeDiceOverlay()" class="mt-4 px-4 py-1.5 rounded-lg bg-slatecard text-[11px] text-slate-400 hover:text-amber-400 uppercase tracking-wider font-semibold" style="border: 1px solid var(--border-subtle);">
                 Toque para fechar
             </button>
         </div>
@@ -531,11 +524,11 @@
 
     <!-- CABEÇALHO SUPERIOR -->
     <header>
-        <div class="container-app flex flex-col gap-2.5">
-            <!-- Linha 1: Logo + Tema Mitológico + Paleta de Cor + Som Bárdico + Auto-save -->
+        <div class="container-app flex flex-col gap-2">
+            <!-- Linha 1: Logo + Status Nuvem/Mesa + Tema Mitológico + Paleta + Som Bárdico -->
             <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
-                    <div class="rounded-lg flex items-center justify-center font-display font-extrabold text-sm"
+                    <div class="rounded-lg flex items-center justify-center font-display font-extrabold text-sm shrink-0"
                         style="width: 2.15rem; height: 2.15rem; background: linear-gradient(135deg, rgb(var(--accent-500)), rgb(var(--accent-700))); color: #0b0d12;">
                         5.5
                     </div>
@@ -546,11 +539,19 @@
                 </div>
 
                 <div class="flex items-center gap-1.5">
+                    <!-- Botão Mesa / Nuvem (Supabase Realtime Status) -->
+                    <button type="button" id="cloudStatusBtn" onclick="openMasterPanel()" title="Abrir Painel da Mesa & Visão do Mestre (Supabase)"
+                        class="px-2.5 py-1.5 rounded-lg bg-slatecard flex items-center gap-1.5 text-xs font-bold"
+                        style="border: 1px solid rgb(var(--accent-500) / 0.4);">
+                        <span id="cloudStatusDot" class="rounded-full inline-block" style="width: 0.55rem; height: 0.55rem; background-color: #94a3b8;"></span>
+                        <span id="cloudStatusLabel" class="text-slate-300">Mesa</span>
+                    </button>
+
                     <!-- Botão Modo Claro/Escuro Mitológico (Selûne / Lathander) -->
                     <button type="button" id="themeModeBtn" onclick="toggleThemeMode()" title="Alternar entre Noite de Selûne (Escuro) e Alvorada de Lathander (Claro)"
                         class="p-2 rounded-lg bg-slatecard text-amber-400 flex items-center gap-1.5 text-xs font-semibold" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
                         <span id="mythicThemeIcon" class="flex items-center justify-center"></span>
-                        <span id="mythicThemeLabel" class="hidden sm:inline">Selûne</span>
+                        <span id="mythicThemeLabel" class="hidden md:inline">Selûne</span>
                     </button>
 
                     <!-- Seletor de Cor Principal -->
@@ -558,7 +559,7 @@
                         <button type="button" id="accentPickerBtn" onclick="toggleAccentMenu()" title="Escolher Cor Principal da Ficha"
                             class="p-2 rounded-lg bg-slatecard text-amber-400 flex items-center gap-1.5 text-xs font-semibold" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
                             <span id="activeColorDot" class="rounded-full inline-block" style="width: 0.85rem; height: 0.85rem; background-color: rgb(var(--accent-500)); border: 1px solid rgba(255,255,255,0.45);"></span>
-                            <span class="hidden sm:inline">Cor</span>
+                            <span class="hidden md:inline">Cor</span>
                         </button>
                         <div id="accentPickerMenu" class="hidden absolute right-0 mt-2 bg-slatepanel arcane-border rounded-2xl p-3 shadow-2xl z-50" style="width: 14.5rem;">
                             <div class="text-[11px] font-display font-bold uppercase tracking-wider text-amber-400 mb-2">Essência Cromática</div>
@@ -570,14 +571,8 @@
                     <button type="button" id="soundToggleBtn" onclick="toggleAudio()" title="Ativar/Desativar Áudio Bárdico"
                         class="p-2 rounded-lg bg-slatecard text-amber-400 flex items-center gap-1.5 text-xs font-semibold" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
                         <span id="soundIconSpan">🔊</span>
-                        <span id="soundLabelSpan" class="hidden md:inline">Som</span>
+                        <span id="soundLabelSpan" class="hidden lg:inline">Som</span>
                     </button>
-
-                    <!-- Indicador de Auto-Save -->
-                    <div id="saveIndicator" class="flex items-center gap-1 text-[11px] text-emerald-400 bg-emerald-950/50 px-2 py-1.5 rounded-lg" style="border: 1px solid rgba(16, 185, 129, 0.3);">
-                        <span>✓</span>
-                        <span class="hidden sm:inline">Salvo</span>
-                    </div>
                 </div>
             </div>
 
@@ -585,29 +580,6 @@
             <div class="flex flex-wrap items-center justify-between gap-2 pt-1.5" style="border-top: 1px solid var(--border-subtle);">
                 <select id="characterSelect" aria-label="Selecionar Personagem" class="flex-1 bg-slatecard text-slate-100 text-sm rounded-lg px-2.5 py-1.5" style="min-width: 145px;">
                 </select>
-
-                <div class="flex items-center gap-1.5">
-                    <button type="button" onclick="createNewCharacter()" title="Nova Ficha em Branco"
-                        class="px-2.5 py-1.5 rounded-lg text-amber-400 text-xs font-semibold flex items-center gap-1" style="background-color: rgb(var(--accent-500) / 0.16); border: 1px solid rgb(var(--accent-500) / 0.35);">
-                        <span>+</span><span>Nova</span>
-                    </button>
-
-                    <button type="button" onclick="exportCharacterJSON()" title="Exportar Backup JSON"
-                        class="px-2.5 py-1.5 rounded-lg bg-slatecard text-slate-300 text-xs font-medium flex items-center gap-1" style="border: 1px solid var(--border-strong);">
-                        <span class="text-amber-400">↓</span><span>Exportar</span>
-                    </button>
-
-                    <label title="Importar Backup JSON"
-                        class="px-2.5 py-1.5 rounded-lg bg-slatecard text-slate-300 text-xs font-medium flex items-center gap-1 cursor-pointer" style="border: 1px solid var(--border-strong);">
-                        <span class="text-amber-400">↑</span><span>Importar</span>
-                        <input type="file" id="importJsonInput" accept=".json" class="hidden" onchange="importCharacterJSON(event)">
-                    </label>
-
-                    <button type="button" onclick="requestDeleteCharacter()" title="Excluir Ficha Atual"
-                        class="px-2.5 py-1.5 rounded-lg bg-red-950/40 text-red-400 text-xs font-bold" style="border: 1px solid rgba(239, 68, 68, 0.3);">
-                        🗑
-                    </button>
-                </div>
             </div>
         </div>
     </header>
@@ -677,7 +649,6 @@
         <section class="grid grid-cols-1 md:grid-cols-12 gap-4">
             <!-- CA, Iniciativa, Deslocamento e Percepção Passiva -->
             <div class="md:col-span-5 grid grid-cols-2 gap-3">
-                <!-- Classe de Armadura -->
                 <div class="bg-slatepanel arcane-border rounded-2xl p-3 flex flex-col items-center justify-between">
                     <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">🛡 Classe Armadura</span>
                     <input type="number" data-field="ac" class="w-20 text-center text-2xl font-display font-extrabold my-1" style="background: transparent; border: none;">
@@ -687,7 +658,6 @@
                     </label>
                 </div>
 
-                <!-- Iniciativa -->
                 <div class="bg-slatepanel arcane-border rounded-2xl p-3 flex flex-col items-center justify-between">
                     <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">⚡ Iniciativa</span>
                     <button type="button" onclick="rollInitiative()" class="roll-btn px-4 py-1 rounded-xl text-2xl font-display font-extrabold text-amber-400 my-1" title="Rolar Iniciativa">
@@ -699,14 +669,12 @@
                     </div>
                 </div>
 
-                <!-- Deslocamento -->
                 <div class="bg-slatepanel arcane-border rounded-2xl p-3 flex flex-col items-center justify-between">
                     <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">👟 Deslocamento</span>
                     <input type="text" data-field="speed" class="w-full text-center text-xl font-display font-bold my-1" style="background: transparent; border: none;" placeholder="9m">
                     <span class="text-[10px] text-slate-400 uppercase">Velocidade</span>
                 </div>
 
-                <!-- Percepção Passiva -->
                 <div class="bg-slatepanel arcane-border rounded-2xl p-3 flex flex-col items-center justify-between">
                     <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 text-center">👁 Percepção Passiva</span>
                     <div id="passivePerceptionDisplay" class="text-2xl font-display font-extrabold my-1">10</div>
@@ -783,12 +751,10 @@
                 <h2 class="font-display font-bold text-base uppercase tracking-wider text-amber-400 m-0">🎲 Atributos, Resistências & Perícias</h2>
                 <span class="text-[11px] text-slate-400">Toque na bolinha: ○ Normal | ● Proficiente | ★ Especialização</span>
             </div>
-            <div id="attributesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Preenchido via JS -->
-            </div>
+            <div id="attributesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </section>
 
-        <!-- SEÇÃO 4: PAINEL DE ABAS (Combate, Magias, Mochila, Notas, Guia 2024) -->
+        <!-- SEÇÃO 4: PAINEL DE ABAS (Combate, Magias, Mochila, Notas, Guia, Mesa & Mestre) -->
         <section id="section-tabs" class="bg-slatepanel arcane-border rounded-2xl overflow-hidden">
             <!-- Barra de Abas Superior -->
             <div class="flex overflow-x-auto bg-slatecard" style="border-bottom: 1px solid var(--border-subtle);">
@@ -807,6 +773,9 @@
                 <button type="button" onclick="switchTab('tutorial')" id="tabBtn-tutorial" class="tab-btn px-4 py-3 text-xs sm:text-sm font-semibold text-slate-400 whitespace-nowrap" style="border-bottom: 2px solid transparent; background: transparent;">
                     📖 Guia & Regras (2024)
                 </button>
+                <button type="button" onclick="switchTab('master')" id="tabBtn-master" class="tab-btn px-4 py-3 text-xs sm:text-sm font-semibold text-slate-400 whitespace-nowrap" style="border-bottom: 2px solid transparent; background: transparent;">
+                    👑 Mesa & Mestre (Nuvem)
+                </button>
             </div>
 
             <!-- ABA 1: COMBATE & MAESTRIAS -->
@@ -821,10 +790,8 @@
                     </button>
                 </div>
 
-                <!-- Lista Responsiva em Cards (Sem scroll horizontal no celular) -->
                 <div id="weaponsListContainer" class="space-y-3"></div>
 
-                <!-- Características e Talentos -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-3" style="border-top: 1px solid var(--border-subtle);">
                     <div>
                         <label class="block font-display font-bold text-amber-400 text-xs uppercase mb-1.5">Características de Classe & Espécie</label>
@@ -861,13 +828,11 @@
                     </div>
                 </div>
 
-                <!-- Espaços de Magia -->
                 <div>
                     <h3 class="font-display font-bold text-amber-400 text-xs uppercase mb-2.5">Espaços de Magia (Usados / Totais)</h3>
                     <div id="spellSlotsGrid" class="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2"></div>
                 </div>
 
-                <!-- Magias Conhecidas -->
                 <div>
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="font-display font-bold text-amber-400 text-sm uppercase m-0">Magias Conhecidas / Preparadas</h3>
@@ -883,7 +848,6 @@
             <div id="tabContent-inventory" class="tab-content hidden p-4 space-y-5">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
                     <div class="lg:col-span-4 space-y-4">
-                        <!-- Moedas -->
                         <div class="bg-slatecard p-3.5 rounded-xl" style="border: 1px solid var(--border-subtle);">
                             <h3 class="font-display font-bold text-amber-400 text-xs uppercase mb-2.5">🪙 Algibeira de Moedas</h3>
                             <div class="grid grid-cols-5 gap-1.5 text-center">
@@ -910,14 +874,12 @@
                             </div>
                         </div>
 
-                        <!-- Sintonização Mágica -->
                         <div class="bg-slatecard p-3.5 rounded-xl" style="border: 1px solid var(--border-subtle);">
                             <h3 class="font-display font-bold text-amber-400 text-xs uppercase mb-2.5">✨ Sintonização Mágica (Máx. 3)</h3>
                             <div id="attunementContainer" class="space-y-2"></div>
                         </div>
                     </div>
 
-                    <!-- Mochila -->
                     <div class="lg:col-span-8">
                         <div class="flex items-center justify-between mb-3">
                             <div>
@@ -953,7 +915,6 @@
 
             <!-- ABA 5: GUIA & REGRAS DE CRIAÇÃO D&D 5.5 (2024) -->
             <div id="tabContent-tutorial" class="tab-content hidden p-4 space-y-5">
-                <!-- Banner Livro do Jogador no Google Drive -->
                 <div class="bg-slatecard rounded-2xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
                     <div>
                         <h3 class="font-display font-bold text-base sm:text-lg text-amber-400 m-0">✨ Como Criar seu Personagem no D&D 5.5 (2024)</h3>
@@ -975,7 +936,6 @@
                     </div>
                 </div>
 
-                <!-- Painel Opcional de Edição de URL do Drive -->
                 <div id="driveConfigPanel" class="hidden bg-slatecard rounded-xl p-3 flex flex-col md:flex-row items-stretch md:items-center gap-2" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
                     <span class="text-xs text-amber-400 font-bold shrink-0">📁 URL do PDF/Pasta:</span>
                     <input type="url" id="driveUrlInput" placeholder="Cole o link do Google Drive..." class="flex-1 px-3 py-1.5 text-xs">
@@ -984,7 +944,6 @@
                     </button>
                 </div>
 
-                <!-- 6 Passos de Criação -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
                     <div class="bg-slatecard rounded-2xl p-4 space-y-2" style="border: 1px solid var(--border-subtle);">
                         <div class="flex items-center gap-2">
@@ -1049,16 +1008,15 @@
                     <div class="bg-slatecard rounded-2xl p-4 space-y-2" style="border: 1px solid var(--border-subtle);">
                         <div class="flex items-center gap-2">
                             <span class="rounded-full font-display font-extrabold text-xs flex items-center justify-center" style="width: 1.5rem; height: 1.5rem; background-color: rgb(var(--accent-500)); color: #0b0d12;">6</span>
-                            <h4 class="font-display font-bold text-sm text-amber-400 uppercase m-0">Dicas no Celular & iPhone</h4>
+                            <h4 class="font-display font-bold text-sm text-amber-400 uppercase m-0">Sincronização na Mesa</h4>
                         </div>
                         <ul class="text-xs text-slate-400 space-y-1 pl-4 m-0">
-                            <li><strong>Safari:</strong> No iPhone, toque em <em>Compartilhar → Abrir no Safari</em> para garantir salvamento permanente.</li>
-                            <li><strong>Backup:</strong> Use <strong>Exportar</strong> no topo para salvar seu arquivo <code>.json</code> e enviar ao Mestre.</li>
+                            <li><strong>Código da Mesa:</strong> Vá na aba <em>Mesa & Mestre</em> e digite o código da campanha para salvar sua ficha na nuvem.</li>
+                            <li><strong>Visão do Mestre:</strong> O Mestre acompanha os PV e status de todos os jogadores ao vivo!</li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Tabela Rápida das 12 Classes -->
                 <div class="bg-slatecard rounded-2xl p-4" style="border: 1px solid var(--border-subtle);">
                     <h4 class="font-display font-bold text-amber-400 text-xs uppercase mb-3">🛡 Tabela Rápida das Classes (D&D 2024)</h4>
                     <div class="overflow-x-auto">
@@ -1090,12 +1048,199 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ABA 6: MESA & VISÃO DO MESTRE (SINCRONIZAÇÃO EM TEMPO REAL VIA SUPABASE) -->
+            <div id="tabContent-master" class="tab-content hidden p-4 space-y-5">
+                <!-- Cabeçalho de Status da Sessão Nuvem -->
+                <div class="bg-slatecard rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
+                    <div>
+                        <h3 class="font-display font-bold text-base text-amber-400 m-0">👑 Autenticação da Mesa & Nuvem</h3>
+                        <p id="cloudSessionDesc" class="text-xs text-slate-300 mt-1 mb-0">
+                            Entre na mesa como <strong>Jogador</strong> (com PIN exclusivo da sua ficha) ou como <strong>Mestre</strong> para acompanhar o grupo em tempo real.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="realtimeBadge" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slatepanel text-slate-400" style="border: 1px solid var(--border-strong);">
+                            ● Desconectado (Modo Local)
+                        </span>
+                        <button type="button" id="logoutCloudBtn" onclick="logoutCloudSession()" class="hidden px-3 py-1 rounded-lg bg-red-950/50 text-red-400 text-xs font-bold" style="border: 1px solid rgba(239,68,68,0.35);">
+                            Sair da Mesa
+                        </button>
+                    </div>
+                </div>
+
+                <!-- FORMULÁRIOS DE ACESSO (EXIBIDOS QUANDO DESLOGADO DA NUVEM) -->
+                <div id="cloudAuthGrid" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <!-- Card 1: Entrar como Jogador (PIN da Ficha) -->
+                    <div class="bg-slatecard rounded-2xl p-4 flex flex-col justify-between space-y-3" style="border: 1px solid var(--border-subtle);">
+                        <div class="space-y-2.5">
+                            <div class="flex items-center gap-2">
+                                <span class="text-base">🛡️</span>
+                                <h4 class="font-display font-bold text-sm text-amber-400 uppercase m-0">Acesso do Jogador</h4>
+                            </div>
+                            <p class="text-[11px] text-slate-400 m-0">
+                                Entre em uma mesa criada pelo Mestre e proteja sua ficha com seu PIN pessoal para que ninguém mais a acesse.
+                            </p>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Código da Mesa</label>
+                                <input type="text" id="playerMesaInput" placeholder="Ex: FAERUN-2026" class="w-full px-3 py-1.5 text-sm font-bold uppercase">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Nome do Personagem</label>
+                                <input type="text" id="playerCharNameInput" placeholder="Nome exato da sua ficha" class="w-full px-3 py-1.5 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">PIN Secreto da Ficha (4-8 dígitos)</label>
+                                <input type="password" id="playerPinInput" maxlength="12" placeholder="••••" class="w-full px-3 py-1.5 text-sm font-bold tracking-widest">
+                            </div>
+                        </div>
+                        <button type="button" onclick="loginAsPlayer()"
+                            class="w-full py-2 rounded-xl font-display font-extrabold text-xs"
+                            style="background: linear-gradient(135deg, rgb(var(--accent-500)), rgb(var(--accent-600))); color: #0b0d12;">
+                            Entrar / Vincular Minha Ficha
+                        </button>
+                    </div>
+
+                    <!-- Card 2: Entrar como Mestre (Visão da Campanha) -->
+                    <div class="bg-slatecard rounded-2xl p-4 flex flex-col justify-between space-y-3" style="border: 1px solid var(--border-subtle);">
+                        <div class="space-y-2.5">
+                            <div class="flex items-center gap-2">
+                                <span class="text-base">👑</span>
+                                <h4 class="font-display font-bold text-sm text-amber-400 uppercase m-0">Acesso do Mestre</h4>
+                            </div>
+                            <p class="text-[11px] text-slate-400 m-0">
+                                Libera o painel ao vivo da campanha para acompanhar PV, CA e inspecionar todas as fichas dos jogadores.
+                            </p>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Código da Mesa</label>
+                                <input type="text" id="masterLoginMesaInput" placeholder="Ex: FAERUN-2026" class="w-full px-3 py-1.5 text-sm font-bold uppercase">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">PIN Secreto do Mestre</label>
+                                <input type="password" id="masterLoginPinInput" maxlength="16" placeholder="••••" class="w-full px-3 py-1.5 text-sm font-bold tracking-widest">
+                            </div>
+                        </div>
+                        <button type="button" onclick="loginAsMaster()"
+                            class="w-full py-2 rounded-xl bg-slatepanel text-amber-400 font-display font-extrabold text-xs"
+                            style="border: 1px solid rgb(var(--accent-500) / 0.45);">
+                            Abrir Visão do Mestre
+                        </button>
+                    </div>
+
+                    <!-- Card 3: Criar Nova Mesa (Exige Chave Mestra) -->
+                    <div class="bg-slatecard rounded-2xl p-4 flex flex-col justify-between space-y-3" style="border: 1px solid var(--border-subtle);">
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-base">🗝️</span>
+                                <h4 class="font-display font-bold text-sm text-amber-400 uppercase m-0">Criar Nova Mesa</h4>
+                            </div>
+                            <p class="text-[11px] text-slate-400 m-0">
+                                Restrito ao Mestre mediante a <strong>Chave Mestra</strong> do sistema.
+                            </p>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Chave Mestra do Sistema</label>
+                                <input type="password" id="createMasterKeyInput" placeholder="Chave Mestra..." class="w-full px-3 py-1.5 text-xs font-bold">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Novo Código</label>
+                                    <input type="text" id="createMesaCodeInput" placeholder="FAERUN-26" class="w-full px-2.5 py-1.5 text-xs font-bold uppercase">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">PIN do Mestre</label>
+                                    <input type="password" id="createMasterPinInput" placeholder="••••" class="w-full px-2.5 py-1.5 text-xs font-bold">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Nome da Campanha</label>
+                                <input type="text" id="createCampaignNameInput" placeholder="Ex: A Mina Perdida de Phandelver" class="w-full px-3 py-1.5 text-xs">
+                            </div>
+                        </div>
+                        <button type="button" onclick="createNewMesa()"
+                            class="w-full py-2 rounded-xl bg-slatepanel text-emerald-400 font-display font-extrabold text-xs"
+                            style="border: 1px solid rgba(16, 185, 129, 0.45);">
+                            Registrar Mesa Oficial
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PAINEL ATIVO DO JOGADOR (OCULTA FICHAS DE OUTROS JOGADORES) -->
+                <div id="playerActiveCloudPanel" class="hidden bg-slatecard rounded-2xl p-4 space-y-3" style="border: 1px solid rgba(16, 185, 129, 0.4);">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-950/70 text-emerald-400 mb-1" style="border: 1px solid rgba(16, 185, 129, 0.4);">
+                                🔒 Ficha Protegida por PIN
+                            </span>
+                            <h4 id="playerActiveTitle" class="font-display font-bold text-base text-amber-400 m-0">Personagem Conectado</h4>
+                            <p id="playerActiveSubtitle" class="text-xs text-slate-300 m-0 mt-0.5">Sincronização automática ativada.</p>
+                        </div>
+                        <button type="button" onclick="syncCurrentCharacterToCloud(true)"
+                            class="px-3.5 py-2 rounded-xl bg-slatepanel text-amber-400 text-xs font-bold"
+                            style="border: 1px solid rgb(var(--accent-500) / 0.4);">
+                            ☁️ Forçar Sincronização Agora
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PAINEL ATIVO DO MESTRE (VISÃO COMPLETA EM TEMPO REAL DO GRUPO) -->
+                <div id="masterActiveCloudPanel" class="hidden space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 bg-slatecard rounded-xl p-3" style="border: 1px solid rgb(var(--accent-500) / 0.35);">
+                        <div>
+                            <h4 id="masterCampaignHeader" class="font-display font-bold text-amber-400 text-sm uppercase m-0">🛡️ Grupo Conectado na Mesa</h4>
+                            <span id="partyCountLabel" class="text-xs text-slate-400">0 personagens registrados</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="syncCurrentCharacterToCloud(true)"
+                                class="px-3 py-1.5 rounded-lg bg-slatepanel text-amber-400 text-xs font-bold"
+                                style="border: 1px solid rgb(var(--accent-500) / 0.35);">
+                                ☁️ Salvar Ficha Aberta
+                            </button>
+                            <button type="button" onclick="fetchPartyCharacters(true)"
+                                class="px-3 py-1.5 rounded-lg bg-slatepanel text-slate-200 text-xs font-bold"
+                                style="border: 1px solid var(--border-strong);">
+                                🔄 Atualizar Grupo
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="partyGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
+                </div>
+
+                <!-- GERENCIAMENTO LOCAL & BACKUP OFFLINE (JSON) -->
+                <div class="bg-slatecard rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3" style="border: 1px solid var(--border-subtle);">
+                    <div>
+                        <h4 class="font-display font-bold text-xs text-amber-400 uppercase m-0">💾 Gerenciamento Local & Backup Offline (.JSON)</h4>
+                        <p class="text-[11px] text-slate-400 m-0 mt-0.5">Crie fichas de rascunho no dispositivo ou exporte/importe backups manuais.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" onclick="createNewCharacter()" title="Nova Ficha em Branco"
+                            class="px-3 py-1.5 rounded-lg text-amber-400 text-xs font-semibold flex items-center gap-1" style="background-color: rgb(var(--accent-500) / 0.16); border: 1px solid rgb(var(--accent-500) / 0.35);">
+                            <span>+</span><span>Nova Ficha</span>
+                        </button>
+
+                        <button type="button" onclick="exportCharacterJSON()" title="Exportar Backup JSON"
+                            class="px-3 py-1.5 rounded-lg bg-slatepanel text-slate-300 text-xs font-medium flex items-center gap-1" style="border: 1px solid var(--border-strong);">
+                            <span class="text-amber-400">↓</span><span>Exportar JSON</span>
+                        </button>
+
+                        <label title="Importar Backup JSON"
+                            class="px-3 py-1.5 rounded-lg bg-slatepanel text-slate-300 text-xs font-medium flex items-center gap-1 cursor-pointer" style="border: 1px solid var(--border-strong);">
+                            <span class="text-amber-400">↑</span><span>Importar JSON</span>
+                            <input type="file" id="importJsonInput" accept=".json" class="hidden" onchange="importCharacterJSON(event)">
+                        </label>
+
+                        <button type="button" onclick="requestDeleteCharacter()" title="Excluir Ficha Atual"
+                            class="px-3 py-1.5 rounded-lg bg-red-950/40 text-red-400 text-xs font-bold flex items-center gap-1" style="border: 1px solid rgba(239, 68, 68, 0.3);">
+                            <span>🗑</span><span>Excluir</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 
     <!-- WIDGET FLUTUANTE DE ROLAGEM DE DADOS -->
     <div id="diceWidgetWrapper">
-        <!-- Painel Expandido do Rolador -->
         <div id="diceDrawer" class="hidden arcane-border shadow-2xl">
             <div class="flex items-center justify-between pb-2 mb-3" style="border-bottom: 1px solid var(--border-subtle);">
                 <span class="font-display font-bold text-amber-400 text-sm">🎲 Mesa de Dados</span>
@@ -1105,14 +1250,12 @@
                 </div>
             </div>
 
-            <!-- Modo de Rolagem -->
             <div class="grid grid-cols-3 gap-1 bg-slatecard p-1 rounded-xl mb-3 text-xs font-bold" style="border: 1px solid var(--border-subtle);">
                 <button type="button" onclick="setRollMode('normal')" id="mode-normal" class="py-1.5 rounded-lg text-white" style="background-color: rgb(var(--accent-600)); border: none;">Normal</button>
                 <button type="button" onclick="setRollMode('adv')" id="mode-adv" class="py-1.5 rounded-lg text-slate-400" style="background: transparent; border: none;">Vantagem</button>
                 <button type="button" onclick="setRollMode('dis')" id="mode-dis" class="py-1.5 rounded-lg text-slate-400" style="background: transparent; border: none;">Desvantagem</button>
             </div>
 
-            <!-- Dados Rápidos -->
             <div class="grid grid-cols-7 gap-1 mb-3">
                 <button type="button" onclick="rollCustomDie(4)" class="py-2 rounded-lg bg-slatecard text-xs font-bold" style="border: 1px solid var(--border-strong);">d4</button>
                 <button type="button" onclick="rollCustomDie(6)" class="py-2 rounded-lg bg-slatecard text-xs font-bold" style="border: 1px solid var(--border-strong);">d6</button>
@@ -1123,13 +1266,11 @@
                 <button type="button" onclick="rollCustomDie(100)" class="py-2 rounded-lg bg-slatecard text-[11px] font-bold" style="border: 1px solid var(--border-strong);">d100</button>
             </div>
 
-            <!-- Histórico de Rolagens -->
             <div id="diceLogContainer" class="overflow-y-auto space-y-2" style="max-height: 11rem;">
                 <p class="text-xs text-slate-400 text-center py-3">Toque em qualquer atributo, perícia ou dado acima para rolar.</p>
             </div>
         </div>
 
-        <!-- Botão Flutuante Desktop -->
         <button type="button" id="desktopDiceFab" onclick="toggleDiceDrawer()"
             class="items-center gap-2 font-display font-extrabold px-4 py-3 rounded-full shadow-lg"
             style="background: linear-gradient(135deg, rgb(var(--accent-600)), rgb(var(--accent-500))); color: #0b0d12; border: none;">
@@ -1142,7 +1283,7 @@
     <nav id="mobileBottomNav" aria-label="Navegação Mobile">
         <button type="button" onclick="mobileNavTo('attributes')" class="flex flex-col items-center justify-center py-1 text-[10px] font-bold text-slate-300" style="background: transparent; border: none;">
             <span class="text-sm">📊</span>
-            <span>Atributos</span>
+            <span>Atrib.</span>
         </button>
         <button type="button" onclick="mobileNavTo('combat')" class="flex flex-col items-center justify-center py-1 text-[10px] font-bold text-slate-300" style="background: transparent; border: none;">
             <span class="text-sm">⚔️</span>
@@ -1160,24 +1301,38 @@
             <span class="text-sm">📖</span>
             <span>Guia</span>
         </button>
+        <button type="button" onclick="mobileNavTo('master')" class="flex flex-col items-center justify-center py-1 text-[10px] font-bold text-slate-300" style="background: transparent; border: none;">
+            <span class="text-sm">👑</span>
+            <span>Mesa</span>
+        </button>
         <button type="button" onclick="toggleDiceDrawer()" class="flex flex-col items-center justify-center py-1 text-[10px] font-extrabold text-amber-400 relative" style="background: transparent; border: none;">
             <span class="text-sm">🎲</span>
             <span>Dados</span>
-            <span id="lastRollBadgeMobile" class="hidden absolute top-0 right-2 text-[9px] font-extrabold px-1.5 rounded-full" style="background-color: rgb(var(--accent-500)); color: #0b0d12;">20</span>
+            <span id="lastRollBadgeMobile" class="hidden absolute top-0 right-1 text-[9px] font-extrabold px-1.5 rounded-full" style="background-color: rgb(var(--accent-500)); color: #0b0d12;">20</span>
         </button>
     </nav>
 
     <script>
         // ============================================================================
-        // CONSTANTES E REGRAS D&D 5.5 (2024)
+        // CREDENCIAIS SUPABASE & CHAVES DE ARMAZENAMENTO LOCAL
         // ============================================================================
+        const SUPABASE_URL = 'https://diwavlfcvnkwiwcnbkxb.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_ApQwoRhOTvDGz-ADBm4tfg_ij6-_w1g';
+
+        // Hash SHA-256 da Chave Mestra padrão ("DND-MASTER-2026") para validação sem texto puro
+        const MASTER_CREATION_KEY_HASH = 'f452095f441b66c0038ba998cc3bb0e143f26f99f8484f26b482722fd56f6c47';
+
         const STORAGE_KEY = 'dnd_5_5_characters_v1';
         const ACTIVE_ID_KEY = 'dnd_5_5_active_char_id_v1';
+        const CLOUD_SESSION_KEY = 'dnd_5_5_cloud_session_v1';
         const DRIVE_URL_KEY = 'dnd_5_5_drive_url_v1';
         const THEME_MODE_KEY = 'dnd_5_5_theme_mode_v1';
         const ACCENT_COLOR_KEY = 'dnd_5_5_accent_color_v1';
         const DEFAULT_DRIVE_URL = 'https://drive.google.com/file/d/1l-j5pc2prztCIlgfkEfng_yIWs5xT71e/view?usp=sharing';
 
+        // ============================================================================
+        // CONSTANTES DE REGRAS D&D 5.5 (2024) E TEMAS MITOLÓGICOS
+        // ============================================================================
         const ACCENT_THEMES = [
             { id: 'gold', name: 'Ouro Lathander', swatch: '#f59e0b', c200: '253 230 138', c300: '252 211 77', c400: '251 191 36', c500: '245 158 11', c600: '217 119 6', c700: '180 83 9', c900: '120 53 15' },
             { id: 'crimson', name: 'Rubi Tiamat', swatch: '#ef4444', c200: '254 202 202', c300: '252 165 165', c400: '248 113 113', c500: '239 68 68', c600: '220 38 38', c700: '185 28 28', c900: '127 29 29' },
@@ -1187,8 +1342,8 @@
             { id: 'cyan', name: 'Gelo Auril', swatch: '#06b6d4', c200: '165 243 252', c300: '103 232 249', c400: '34 211 238', c500: '6 182 212', c600: '8 145 178', c700: '14 116 144', c900: '22 78 99' }
         ];
 
-        const SELUNE_SVG = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3.5a8.5 8.5 0 1 0 5 14.8A7 7 0 0 1 15.5 3.5z" fill="currentColor" fill-opacity="0.2"/><polygon points="17.5,6.5 18.2,8.1 19.8,8.8 18.2,9.5 17.5,11.1 16.8,9.5 15.2,8.8 16.8,8.1" fill="currentColor" stroke="none"/><circle cx="19.5" cy="13.5" r="1" fill="currentColor" stroke="none"/><circle cx="14.5" cy="13" r="0.8" fill="currentColor" stroke="none"/></svg>`;
-        const LATHANDER_SVG = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18"/><path d="M7 18a5 5 0 0 1 10 0" fill="currentColor" fill-opacity="0.25"/><path d="M12 4v4"/><path d="M5.6 7.6l2.8 2.8"/><path d="M18.4 7.6l-2.8 2.8"/><path d="M3 14h3"/><path d="M18 14h3"/></svg>`;
+        const SELUNE_SVG = `<svg viewBox="0 0 24 24" style="width:1rem;height:1rem;" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3.5a8.5 8.5 0 1 0 5 14.8A7 7 0 0 1 15.5 3.5z" fill="currentColor" fill-opacity="0.2"/><polygon points="17.5,6.5 18.2,8.1 19.8,8.8 18.2,9.5 17.5,11.1 16.8,9.5 15.2,8.8 16.8,8.1" fill="currentColor" stroke="none"/><circle cx="19.5" cy="13.5" r="1" fill="currentColor" stroke="none"/></svg>`;
+        const LATHANDER_SVG = `<svg viewBox="0 0 24 24" style="width:1rem;height:1rem;" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18"/><path d="M7 18a5 5 0 0 1 10 0" fill="currentColor" fill-opacity="0.25"/><path d="M12 4v4"/><path d="M5.6 7.6l2.8 2.8"/><path d="M18.4 7.6l-2.8 2.8"/><path d="M3 14h3"/><path d="M18 14h3"/></svg>`;
 
         const ATTRIBUTES_CONFIG = [
             { key: 'str', abbr: 'FOR', label: 'Força', skills: [{ key: 'athletics', label: 'Atletismo' }] },
@@ -1211,9 +1366,6 @@
             { name: 'Afligir (Vex)', desc: 'Você ganha Vantagem na próxima jogada de ataque contra o mesmo alvo até o fim do próximo turno.' }
         ];
 
-        // ============================================================================
-        // ESTADO GLOBAL
-        // ============================================================================
         let characters = [];
         let activeCharId = null;
         let rollMode = 'normal';
@@ -1223,6 +1375,657 @@
         let diceAnimInterval = null;
         let isLightMode = false;
         let currentAccentId = 'gold';
+
+        // Estado Supabase & Sessão Autenticada (role: 'none' | 'player' | 'master')
+        let supabaseClient = null;
+        let cloudSession = {
+            role: 'none',
+            mesaCodigo: '',
+            campaignName: '',
+            charId: '',
+            charName: '',
+            pinHash: ''
+        };
+        let realtimeChannel = null;
+        let cloudSyncTimer = null;
+        let partyCharacters = [];
+
+        // ============================================================================
+        // CRIPTOGRAFIA SHA-256 (WEB CRYPTO API + FALLBACK DETERMINÍSTICO)
+        // ============================================================================
+        async function sha256(message) {
+            const text = String(message || '').trim();
+            if (window.crypto && window.crypto.subtle) {
+                const msgBuffer = new TextEncoder().encode(text);
+                const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            }
+            // Fallback seguro caso executado em contexto HTTP sem SubtleCrypto
+            let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+            for (let i = 0; i < text.length; i++) {
+                const ch = text.charCodeAt(i);
+                h1 = Math.imul(h1 ^ ch, 2654435761);
+                h2 = Math.imul(h2 ^ ch, 1597334677);
+            }
+            h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+            h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+            return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(16).padStart(16, '0');
+        }
+
+        // ============================================================================
+        // INTEGRAÇÃO SUPABASE (CONTROLE DE ACESSO POR PIN + REALTIME VISÃO DO MESTRE)
+        // ============================================================================
+        function initSupabase() {
+            try {
+                if (window.supabase && typeof window.supabase.createClient === 'function') {
+                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                }
+            } catch (err) {
+                console.warn('Supabase SDK indisponível (modo offline ativo):', err);
+                supabaseClient = null;
+            }
+
+            try {
+                const savedSession = JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY) || 'null');
+                if (savedSession && savedSession.role && savedSession.role !== 'none' && savedSession.mesaCodigo) {
+                    cloudSession = savedSession;
+                }
+            } catch (e) {
+                cloudSession = { role: 'none', mesaCodigo: '', campaignName: '', charId: '', charName: '', pinHash: '' };
+            }
+
+            // Pré-preenche o nome do personagem atual no campo de login do jogador
+            const currentChar = getActiveChar();
+            const playerCharInput = document.getElementById('playerCharNameInput');
+            if (playerCharInput && currentChar && currentChar.name) {
+                playerCharInput.value = currentChar.name;
+            }
+
+            renderCloudSessionUI();
+
+            if (cloudSession.role !== 'none' && supabaseClient) {
+                updateCloudIndicator('syncing', cloudSession.mesaCodigo);
+                if (cloudSession.role === 'master') {
+                    fetchPartyCharacters(false);
+                    subscribeToMesaRealtime();
+                } else if (cloudSession.role === 'player') {
+                    updateCloudIndicator('synced', `${cloudSession.mesaCodigo} • ${cloudSession.charName}`);
+                }
+            } else {
+                updateCloudIndicator('offline', 'Local');
+            }
+        }
+
+        function saveCloudSession() {
+            localStorage.setItem(CLOUD_SESSION_KEY, JSON.stringify(cloudSession));
+        }
+
+        function renderCloudSessionUI() {
+            const authGrid = document.getElementById('cloudAuthGrid');
+            const playerPanel = document.getElementById('playerActiveCloudPanel');
+            const masterPanel = document.getElementById('masterActiveCloudPanel');
+            const logoutBtn = document.getElementById('logoutCloudBtn');
+            const descEl = document.getElementById('cloudSessionDesc');
+
+            if (cloudSession.role === 'none') {
+                authGrid.classList.remove('hidden');
+                playerPanel.classList.add('hidden');
+                masterPanel.classList.add('hidden');
+                logoutBtn.classList.add('hidden');
+                descEl.innerHTML = 'Entre na mesa como <strong>Jogador</strong> (com PIN exclusivo da sua ficha) ou como <strong>Mestre</strong> para acompanhar o grupo em tempo real.';
+            } else if (cloudSession.role === 'player') {
+                authGrid.classList.add('hidden');
+                playerPanel.classList.remove('hidden');
+                masterPanel.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                descEl.innerHTML = `Conectado à mesa <strong>${escapeHtml(cloudSession.mesaCodigo)}</strong> como Jogador.`;
+                document.getElementById('playerActiveTitle').textContent = `${cloudSession.charName} — Mesa ${cloudSession.mesaCodigo}`;
+                document.getElementById('playerActiveSubtitle').textContent = 'Suas alterações são sincronizadas automaticamente e protegidas pelo seu PIN pessoal.';
+            } else if (cloudSession.role === 'master') {
+                authGrid.classList.add('hidden');
+                playerPanel.classList.add('hidden');
+                masterPanel.classList.remove('hidden');
+                logoutBtn.classList.remove('hidden');
+                const campTitle = cloudSession.campaignName ? ` (${escapeHtml(cloudSession.campaignName)})` : '';
+                descEl.innerHTML = `Modo <strong>Mestre da Campanha</strong> ativo na mesa <strong>${escapeHtml(cloudSession.mesaCodigo)}</strong>${campTitle}.`;
+                document.getElementById('masterCampaignHeader').textContent = `🛡️ Mesa ${cloudSession.mesaCodigo}${cloudSession.campaignName ? ' — ' + cloudSession.campaignName : ''}`;
+            }
+        }
+
+        function updateCloudIndicator(status, labelText) {
+            const dot = document.getElementById('cloudStatusDot');
+            const label = document.getElementById('cloudStatusLabel');
+            const rtBadge = document.getElementById('realtimeBadge');
+
+            if (status === 'synced') {
+                if (dot) dot.style.backgroundColor = '#10b981';
+                if (label) label.textContent = labelText || cloudSession.mesaCodigo || 'Nuvem';
+                if (rtBadge) {
+                    const roleTag = cloudSession.role === 'master' ? 'Mestre Ao Vivo' : 'Jogador Protegido';
+                    rtBadge.textContent = `● ${roleTag}: ${cloudSession.mesaCodigo}`;
+                    rtBadge.style.color = '#34d399';
+                    rtBadge.style.borderColor = 'rgba(16, 185, 129, 0.45)';
+                }
+            } else if (status === 'syncing') {
+                if (dot) dot.style.backgroundColor = '#f59e0b';
+                if (label) label.textContent = 'Sincronizando...';
+            } else if (status === 'error') {
+                if (dot) dot.style.backgroundColor = '#ef4444';
+                if (label) label.textContent = 'Offline';
+                if (rtBadge) {
+                    rtBadge.textContent = '● Sem conexão com a nuvem (salvo localmente)';
+                    rtBadge.style.color = '#f87171';
+                }
+            } else {
+                if (dot) dot.style.backgroundColor = '#94a3b8';
+                if (label) label.textContent = 'Mesa';
+                if (rtBadge) {
+                    rtBadge.textContent = '● Desconectado (Modo Local)';
+                    rtBadge.style.color = 'var(--text-muted)';
+                }
+            }
+        }
+
+        function openMasterPanel() {
+            switchTab('master');
+            const sec = document.getElementById('section-tabs');
+            if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+            if (cloudSession.role === 'master' && supabaseClient) {
+                fetchPartyCharacters(false);
+            }
+        }
+
+        // 1. CRIAR NOVA MESA (SOMENTE O MESTRE COM A CHAVE MESTRA)
+        async function createNewMesa() {
+            if (!supabaseClient) {
+                showToast('Sem conexão com o Supabase. Verifique sua internet.', 'error');
+                return;
+            }
+
+            const masterKey = (document.getElementById('createMasterKeyInput')?.value || '').trim();
+            const codigo = (document.getElementById('createMesaCodeInput')?.value || '').trim().toUpperCase().replace(/\s+/g, '-');
+            const mestrePin = (document.getElementById('createMasterPinInput')?.value || '').trim();
+            const campaignName = (document.getElementById('createCampaignNameInput')?.value || '').trim();
+
+            if (!masterKey || !codigo || !mestrePin) {
+                showToast('Preencha a Chave Mestra, o Novo Código da Mesa e o PIN do Mestre.', 'error');
+                return;
+            }
+
+            if (mestrePin.length < 4) {
+                showToast('O PIN do Mestre deve ter pelo menos 4 caracteres.', 'error');
+                return;
+            }
+
+            const keyHash = await sha256(masterKey);
+            if (keyHash !== MASTER_CREATION_KEY_HASH) {
+                showToast('Chave Mestra inválida! Apenas o Mestre pode criar mesas.', 'error');
+                return;
+            }
+
+            try {
+                // Verifica se o código já existe
+                const { data: existing } = await supabaseClient
+                    .from('mesas')
+                    .select('codigo')
+                    .eq('codigo', codigo)
+                    .maybeSingle();
+
+                if (existing) {
+                    showToast(`O código de mesa "${codigo}" já está em uso. Escolha outro.`, 'error');
+                    return;
+                }
+
+                const mestrePinHash = await sha256(mestrePin);
+                const { error } = await supabaseClient
+                    .from('mesas')
+                    .insert({
+                        codigo: codigo,
+                        mestre_pin_hash: mestrePinHash,
+                        nome_campanha: campaignName || 'Campanha D&D 5.5'
+                    });
+
+                if (error) throw error;
+
+                // Já conecta automaticamente como Mestre na mesa recém-criada
+                cloudSession = {
+                    role: 'master',
+                    mesaCodigo: codigo,
+                    campaignName: campaignName || 'Campanha D&D 5.5',
+                    charId: '',
+                    charName: '',
+                    pinHash: mestrePinHash
+                };
+                saveCloudSession();
+                renderCloudSessionUI();
+                updateCloudIndicator('synced', `Mestre: ${codigo}`);
+                fetchPartyCharacters(false);
+                subscribeToMesaRealtime();
+                showToast(`Mesa "${codigo}" criada com sucesso! Compartilhe esse código com seus jogadores.`, 'success');
+            } catch (err) {
+                console.error('Erro ao criar mesa:', err);
+                showToast('Erro ao criar mesa no Supabase. Verifique se a tabela "mesas" foi criada no SQL Editor.', 'error');
+            }
+        }
+
+        // 2. ENTRAR COMO JOGADOR (VALIDA MESA OFICIAL + PIN EXCLUSIVO DA FICHA)
+        async function loginAsPlayer() {
+            if (!supabaseClient) {
+                showToast('Sem conexão com o Supabase. Verifique sua internet.', 'error');
+                return;
+            }
+
+            const codigo = (document.getElementById('playerMesaInput')?.value || '').trim().toUpperCase().replace(/\s+/g, '-');
+            const charName = (document.getElementById('playerCharNameInput')?.value || '').trim();
+            const pin = (document.getElementById('playerPinInput')?.value || '').trim();
+
+            if (!codigo || !charName || !pin) {
+                showToast('Informe o Código da Mesa, o Nome do Personagem e o seu PIN.', 'error');
+                return;
+            }
+
+            if (pin.length < 4) {
+                showToast('O PIN secreto da ficha deve ter pelo menos 4 caracteres.', 'error');
+                return;
+            }
+
+            try {
+                // 1. Verifica se a mesa realmente foi criada pelo Mestre
+                const { data: mesaData, error: mesaErr } = await supabaseClient
+                    .from('mesas')
+                    .select('codigo, nome_campanha')
+                    .eq('codigo', codigo)
+                    .maybeSingle();
+
+                if (mesaErr) throw mesaErr;
+                if (!mesaData) {
+                    showToast(`A mesa "${codigo}" não existe. Peça o código oficial ao seu Mestre.`, 'error');
+                    return;
+                }
+
+                const pinHash = await sha256(pin);
+
+                // 2. Verifica se já existe um personagem com esse nome nessa mesa
+                const { data: existingChars, error: charErr } = await supabaseClient
+                    .from('personagens')
+                    .select('*')
+                    .eq('mesa_codigo', codigo)
+                    .ilike('nome', charName);
+
+                if (charErr) throw charErr;
+
+                if (existingChars && existingChars.length > 0) {
+                    const targetRow = existingChars[0];
+                    // Valida o PIN do jogador
+                    if (targetRow.jogador_pin_hash && targetRow.jogador_pin_hash !== pinHash) {
+                        showToast('PIN incorreto para este personagem! Você não tem permissão para acessar fichas de outros jogadores.', 'error');
+                        return;
+                    }
+
+                    // PIN válido: carrega a ficha da nuvem para o dispositivo
+                    const cloudChar = JSON.parse(JSON.stringify(targetRow.dados));
+                    cloudChar.id = targetRow.id;
+                    cloudChar.name = targetRow.nome;
+
+                    const localIdx = characters.findIndex(c => c.id === cloudChar.id);
+                    if (localIdx >= 0) {
+                        characters[localIdx] = cloudChar;
+                    } else {
+                        characters.push(cloudChar);
+                    }
+                    activeCharId = cloudChar.id;
+                    saveToStorage(false);
+                    renderAll();
+
+                    cloudSession = {
+                        role: 'player',
+                        mesaCodigo: codigo,
+                        campaignName: mesaData.nome_campanha || '',
+                        charId: cloudChar.id,
+                        charName: cloudChar.name,
+                        pinHash: pinHash
+                    };
+                    saveCloudSession();
+                    renderCloudSessionUI();
+                    updateCloudIndicator('synced', `${codigo} • ${cloudChar.name}`);
+                    showToast(`Bem-vindo de volta, ${cloudChar.name}! Ficha desbloqueada.`, 'success');
+                } else {
+                    // Personagem novo na mesa: vincula a ficha atual e registra com o PIN do jogador
+                    const currentChar = getActiveChar();
+                    currentChar.name = charName;
+                    saveToStorage(false);
+                    renderAll();
+
+                    const payload = {
+                        id: currentChar.id,
+                        mesa_codigo: codigo,
+                        nome: charName,
+                        jogador_pin_hash: pinHash,
+                        dados: currentChar,
+                        atualizado_em: new Date().toISOString()
+                    };
+
+                    const { error: upsertErr } = await supabaseClient
+                        .from('personagens')
+                        .upsert(payload, { onConflict: 'id' });
+
+                    if (upsertErr) throw upsertErr;
+
+                    cloudSession = {
+                        role: 'player',
+                        mesaCodigo: codigo,
+                        campaignName: mesaData.nome_campanha || '',
+                        charId: currentChar.id,
+                        charName: charName,
+                        pinHash: pinHash
+                    };
+                    saveCloudSession();
+                    renderCloudSessionUI();
+                    updateCloudIndicator('synced', `${codigo} • ${charName}`);
+                    showToast(`Ficha "${charName}" registrada e protegida com seu PIN na mesa ${codigo}!`, 'success');
+                }
+            } catch (err) {
+                console.error('Erro no login do jogador:', err);
+                showToast('Erro ao autenticar na mesa. Verifique sua conexão.', 'error');
+            }
+        }
+
+        // 3. ENTRAR COMO MESTRE (VALIDA PIN DO MESTRE NA TABELA MESAS)
+        async function loginAsMaster() {
+            if (!supabaseClient) {
+                showToast('Sem conexão com o Supabase. Verifique sua internet.', 'error');
+                return;
+            }
+
+            const codigo = (document.getElementById('masterLoginMesaInput')?.value || '').trim().toUpperCase().replace(/\s+/g, '-');
+            const pin = (document.getElementById('masterLoginPinInput')?.value || '').trim();
+
+            if (!codigo || !pin) {
+                showToast('Informe o Código da Mesa e o PIN do Mestre.', 'error');
+                return;
+            }
+
+            try {
+                const { data: mesaData, error } = await supabaseClient
+                    .from('mesas')
+                    .select('*')
+                    .eq('codigo', codigo)
+                    .maybeSingle();
+
+                if (error) throw error;
+                if (!mesaData) {
+                    showToast(`Mesa "${codigo}" não encontrada.`, 'error');
+                    return;
+                }
+
+                const pinHash = await sha256(pin);
+                if (mesaData.mestre_pin_hash !== pinHash) {
+                    showToast('PIN do Mestre incorreto!', 'error');
+                    return;
+                }
+
+                cloudSession = {
+                    role: 'master',
+                    mesaCodigo: codigo,
+                    campaignName: mesaData.nome_campanha || '',
+                    charId: '',
+                    charName: '',
+                    pinHash: pinHash
+                };
+                saveCloudSession();
+                renderCloudSessionUI();
+                updateCloudIndicator('synced', `Mestre: ${codigo}`);
+                fetchPartyCharacters(true);
+                subscribeToMesaRealtime();
+                showToast(`Acesso de Mestre liberado para "${codigo}"!`, 'success');
+            } catch (err) {
+                console.error('Erro no login do Mestre:', err);
+                showToast('Erro ao validar acesso do Mestre.', 'error');
+            }
+        }
+
+        function logoutCloudSession() {
+            if (realtimeChannel && supabaseClient) {
+                supabaseClient.removeChannel(realtimeChannel);
+                realtimeChannel = null;
+            }
+            cloudSession = { role: 'none', mesaCodigo: '', campaignName: '', charId: '', charName: '', pinHash: '' };
+            localStorage.removeItem(CLOUD_SESSION_KEY);
+            partyCharacters = [];
+            renderCloudSessionUI();
+            updateCloudIndicator('offline', 'Mesa');
+            showToast('Desconectado da nuvem. Seus dados continuam salvos localmente.', 'info');
+        }
+
+        function scheduleCloudSync() {
+            if (cloudSession.role === 'none' || !cloudSession.mesaCodigo || !supabaseClient) return;
+            updateCloudIndicator('syncing', cloudSession.mesaCodigo);
+            clearTimeout(cloudSyncTimer);
+            cloudSyncTimer = setTimeout(() => {
+                syncCurrentCharacterToCloud(false);
+            }, 1400);
+        }
+
+        async function syncCurrentCharacterToCloud(manualFeedback = false) {
+            if (cloudSession.role === 'none' || !cloudSession.mesaCodigo) {
+                if (manualFeedback) showToast('Conecte-se a uma mesa antes de sincronizar!', 'info');
+                return;
+            }
+            if (!supabaseClient) {
+                updateCloudIndicator('error', 'Offline');
+                if (manualFeedback) showToast('Cliente Supabase indisponível.', 'error');
+                return;
+            }
+
+            const char = getActiveChar();
+
+            // Se estiver logado como Jogador, garante que só sincronize a ficha vinculada ao seu PIN
+            if (cloudSession.role === 'player' && cloudSession.charId && char.id !== cloudSession.charId) {
+                if (manualFeedback) {
+                    showToast('A ficha selecionada no dropdown não é a ficha vinculada ao seu login atual.', 'error');
+                }
+                return;
+            }
+
+            const payload = {
+                id: char.id,
+                mesa_codigo: cloudSession.mesaCodigo,
+                nome: (char.name && char.name.trim()) ? char.name.trim() : (cloudSession.charName || 'Herói sem nome'),
+                dados: char,
+                atualizado_em: new Date().toISOString()
+            };
+
+            if (cloudSession.role === 'player' && cloudSession.pinHash) {
+                payload.jogador_pin_hash = cloudSession.pinHash;
+                cloudSession.charName = payload.nome;
+                saveCloudSession();
+            }
+
+            updateCloudIndicator('syncing', cloudSession.mesaCodigo);
+
+            try {
+                const { error } = await supabaseClient
+                    .from('personagens')
+                    .upsert(payload, { onConflict: 'id' });
+
+                if (error) throw error;
+
+                const badgeLabel = cloudSession.role === 'master'
+                    ? `Mestre: ${cloudSession.mesaCodigo}`
+                    : `${cloudSession.mesaCodigo} • ${payload.nome}`;
+                updateCloudIndicator('synced', badgeLabel);
+
+                if (manualFeedback) {
+                    showToast(`Ficha "${payload.nome}" sincronizada na nuvem!`, 'success');
+                }
+                if (cloudSession.role === 'master') {
+                    fetchPartyCharacters(false);
+                }
+            } catch (err) {
+                console.error('Erro ao sincronizar no Supabase:', err);
+                updateCloudIndicator('error', 'Offline');
+                if (manualFeedback) {
+                    showToast('Erro ao enviar ficha para o Supabase.', 'error');
+                }
+            }
+        }
+
+        async function fetchPartyCharacters(manualFeedback = false) {
+            if (cloudSession.role !== 'master' || !cloudSession.mesaCodigo || !supabaseClient) return;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('personagens')
+                    .select('*')
+                    .eq('mesa_codigo', cloudSession.mesaCodigo)
+                    .order('atualizado_em', { ascending: false });
+
+                if (error) throw error;
+
+                partyCharacters = data || [];
+                renderPartyGrid();
+                updateCloudIndicator('synced', `Mestre: ${cloudSession.mesaCodigo}`);
+                if (manualFeedback) {
+                    showToast(`Grupo atualizado (${partyCharacters.length} ficha(s)).`, 'info');
+                }
+            } catch (err) {
+                console.error('Erro ao buscar grupo no Supabase:', err);
+                updateCloudIndicator('error', 'Offline');
+            }
+        }
+
+        function subscribeToMesaRealtime() {
+            if (!supabaseClient || cloudSession.role !== 'master' || !cloudSession.mesaCodigo) return;
+
+            if (realtimeChannel) {
+                supabaseClient.removeChannel(realtimeChannel);
+                realtimeChannel = null;
+            }
+
+            realtimeChannel = supabaseClient
+                .channel(`mesa_${cloudSession.mesaCodigo}`)
+                .on(
+                    'postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public',
+                        table: 'personagens',
+                        filter: `mesa_codigo=eq.${cloudSession.mesaCodigo}`
+                    },
+                    () => {
+                        fetchPartyCharacters(false);
+                    }
+                )
+                .subscribe((status) => {
+                    if (status === 'SUBSCRIBED') {
+                        updateCloudIndicator('synced', `Mestre: ${cloudSession.mesaCodigo}`);
+                    }
+                });
+        }
+
+        function renderPartyGrid() {
+            const container = document.getElementById('partyGridContainer');
+            const countLabel = document.getElementById('partyCountLabel');
+            if (!container || cloudSession.role !== 'master') return;
+
+            if (countLabel) {
+                countLabel.textContent = `${partyCharacters.length} ${partyCharacters.length === 1 ? 'personagem' : 'personagens'} na mesa`;
+            }
+
+            if (partyCharacters.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 bg-slatecard rounded-xl p-4 m-0" style="border: 1px solid var(--border-subtle);">Nenhum jogador vinculou uma ficha à mesa <strong>${escapeHtml(cloudSession.mesaCodigo)}</strong> ainda.</p>`;
+                return;
+            }
+
+            container.innerHTML = partyCharacters.map(row => {
+                const d = row.dados || {};
+                const nome = escapeHtml(d.name || row.nome || 'Herói sem nome');
+                const classe = escapeHtml(d.charClass || 'Sem classe');
+                const subclasse = d.subclass ? ` (${escapeHtml(d.subclass)})` : '';
+                const especie = escapeHtml(d.species || 'Espécie não definida');
+                const nivel = parseInt(d.level) || 1;
+                const ac = parseInt(d.ac) || 10;
+                const hpCur = parseInt(d.hpCurrent) || 0;
+                const hpMax = parseInt(d.hpMax) || 0;
+                const hpTemp = parseInt(d.hpTemp) || 0;
+                const wisMod = getMod((d.attributes && d.attributes.wis) || 10);
+                const percProf = (d.skills && d.skills.perception) || 0;
+                const passivePerc = 10 + wisMod + (percProf * getProficiencyBonus(nivel));
+
+                const pct = hpMax > 0 ? Math.max(0, Math.min(100, Math.round((hpCur / hpMax) * 100))) : 0;
+                const isBloodied = hpMax > 0 && hpCur <= Math.floor(hpMax / 2);
+                let barColor = '#10b981';
+                if (pct <= 25) barColor = '#ef4444';
+                else if (pct <= 50) barColor = '#f59e0b';
+
+                const updatedDate = row.atualizado_em ? new Date(row.atualizado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
+
+                return `
+                    <div class="bg-slatecard rounded-2xl p-4 flex flex-col justify-between space-y-3" style="border: 1px solid var(--border-subtle);">
+                        <div>
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <h5 class="font-display font-bold text-base text-amber-400 m-0">${nome}</h5>
+                                    <span class="text-xs text-slate-300 block">${classe}${subclasse} • Nv.${nivel}</span>
+                                    <span class="text-[11px] text-slate-400 block">${especie}</span>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <span class="inline-block px-2 py-0.5 rounded-lg bg-slatepanel text-xs font-extrabold text-amber-400" style="border: 1px solid var(--border-subtle);">
+                                        🛡 CA ${ac}
+                                    </span>
+                                    <span class="block text-[10px] text-slate-400 mt-1">👁 Passiva ${passivePerc}</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 space-y-1">
+                                <div class="flex items-center justify-between text-xs font-bold">
+                                    <span class="${isBloodied ? 'text-red-400' : 'text-emerald-400'}">
+                                        ❤️ PV: ${hpCur} / ${hpMax} ${hpTemp > 0 ? `(+${hpTemp} temp)` : ''}
+                                    </span>
+                                    ${isBloodied ? '<span class="text-[10px] uppercase text-red-400 font-extrabold">🩸 Sangrando</span>' : `<span class="text-[10px] text-slate-400">${pct}%</span>`}
+                                </div>
+                                <div class="hp-bar-track">
+                                    <div class="hp-bar-fill" style="width: ${pct}%; background-color: ${barColor};"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2" style="border-top: 1px solid var(--border-subtle);">
+                            <span class="text-[10px] text-slate-400">🔒 PIN ativo • ${updatedDate}</span>
+                            <button type="button" onclick="inspectPartyCharacter('${escapeHtml(row.id)}')"
+                                class="px-2.5 py-1 rounded-lg bg-slatepanel text-amber-400 text-[11px] font-bold"
+                                style="border: 1px solid rgb(var(--accent-500) / 0.35);">
+                                Inspecionar Ficha
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function inspectPartyCharacter(rowId) {
+            if (cloudSession.role !== 'master') {
+                showToast('Apenas o Mestre pode inspecionar fichas de outros jogadores.', 'error');
+                return;
+            }
+            const found = partyCharacters.find(r => r.id === rowId);
+            if (!found || !found.dados) return;
+
+            const cloudChar = JSON.parse(JSON.stringify(found.dados));
+            const existingIdx = characters.findIndex(c => c.id === cloudChar.id);
+
+            if (existingIdx >= 0) {
+                characters[existingIdx] = cloudChar;
+            } else {
+                characters.push(cloudChar);
+            }
+
+            activeCharId = cloudChar.id;
+            saveToStorage(false);
+            renderAll();
+            showToast(`Ficha de "${cloudChar.name || 'Herói'}" aberta no modo Mestre!`, 'success');
+        }
 
         // ============================================================================
         // SINTETIZADOR DE ÁUDIO BÁRDICO & DADOS (WEB AUDIO API OFFLINE)
@@ -1387,19 +2190,15 @@
             saveToStorage(false);
         }
 
-        function saveToStorage(flashIndicator = true) {
+        function saveToStorage(triggerCloud = true) {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
                 localStorage.setItem(ACTIVE_ID_KEY, activeCharId);
-                if (flashIndicator) {
-                    const ind = document.getElementById('saveIndicator');
-                    if (ind) {
-                        ind.style.transform = 'scale(1.06)';
-                        setTimeout(() => { ind.style.transform = 'scale(1)'; }, 180);
-                    }
-                }
             } catch (e) {
-                showToast('Aviso: armazenamento local indisponível neste modo de visualização.', 'info');
+                showToast('Aviso: armazenamento local indisponível neste navegador.', 'info');
+            }
+            if (triggerCloud) {
+                scheduleCloudSync();
             }
         }
 
@@ -1632,7 +2431,6 @@
             }
         }
 
-        // Armas em Cards Responsivos (Empilháveis no Mobile, Compactos no Desktop)
         function renderWeapons(char) {
             const container = document.getElementById('weaponsListContainer');
             if (!char.weapons || char.weapons.length === 0) {
@@ -1656,7 +2454,6 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                            <!-- Acerto -->
                             <div class="flex items-center justify-between bg-slatepanel px-2.5 py-1.5 rounded-lg" style="border: 1px solid var(--border-subtle);">
                                 <span class="text-xs text-slate-400 font-semibold">Bônus Acerto:</span>
                                 <div class="flex items-center gap-1.5">
@@ -1669,7 +2466,6 @@
                                 </div>
                             </div>
 
-                            <!-- Dano -->
                             <div class="flex items-center justify-between bg-slatepanel px-2.5 py-1.5 rounded-lg gap-1.5" style="border: 1px solid var(--border-subtle);">
                                 <input type="text" value="${escapeHtml(w.damage)}" onchange="updateWeapon(${idx}, 'damage', this.value)"
                                     class="flex-1 px-2 py-0.5 text-sm" placeholder="Dano (ex: 1d8+3)">
@@ -1679,7 +2475,6 @@
                                 </button>
                             </div>
 
-                            <!-- Maestria 2024 -->
                             <div>
                                 <select onchange="updateWeapon(${idx}, 'mastery', this.value)" class="w-full px-2.5 py-1.5 text-xs text-amber-400 font-semibold">
                                     ${masteryOptions}
@@ -1854,7 +2649,7 @@
                         renderAttributesAndSkills(char);
                     }
                     updateComputedStats(char);
-                    saveToStorage();
+                    saveToStorage(true);
                 });
             });
 
@@ -1864,7 +2659,7 @@
                     if (!char.currency) char.currency = { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 };
                     const k = e.target.getAttribute('data-currency');
                     char.currency[k] = parseInt(e.target.value) || 0;
-                    saveToStorage();
+                    saveToStorage(true);
                 });
             });
         }
@@ -1873,7 +2668,7 @@
             const char = getActiveChar();
             char.inspiration = !char.inspiration;
             populateSimpleFields(char);
-            saveToStorage();
+            saveToStorage(true);
             if (char.inspiration) {
                 playBardicChord([329.63, 415.30, 493.88, 659.25], 0.055, 0.9, 0.13);
             }
@@ -1887,7 +2682,7 @@
             char.hpCurrent = cur;
             populateSimpleFields(char);
             updateComputedStats(char);
-            saveToStorage();
+            saveToStorage(true);
         }
 
         function spendHitDie() {
@@ -1899,7 +2694,7 @@
             }
             char.hitDiceCurrent = cur - 1;
             populateSimpleFields(char);
-            saveToStorage();
+            saveToStorage(true);
 
             const match = (char.hitDiceTotal || '1d8').match(/d(\d+)/i);
             const sides = match ? parseInt(match[1]) : 8;
@@ -1911,7 +2706,7 @@
             const char = getActiveChar();
             char.deathSaves[type][index] = !char.deathSaves[type][index];
             renderDeathSaves(char);
-            saveToStorage();
+            saveToStorage(true);
         }
 
         function updateAttribute(attrKey, value) {
@@ -1919,14 +2714,14 @@
             char.attributes[attrKey] = Math.max(1, Math.min(30, parseInt(value) || 10));
             renderAttributesAndSkills(char);
             updateComputedStats(char);
-            saveToStorage();
+            saveToStorage(true);
         }
 
         function toggleSavingThrow(attrKey) {
             const char = getActiveChar();
             char.savingThrows[attrKey] = !char.savingThrows[attrKey];
             renderAttributesAndSkills(char);
-            saveToStorage();
+            saveToStorage(true);
         }
 
         function cycleSkillProf(skillKey) {
@@ -1935,14 +2730,14 @@
             char.skills[skillKey] = (current + 1) % 3;
             renderAttributesAndSkills(char);
             updateComputedStats(char);
-            saveToStorage();
+            saveToStorage(true);
         }
 
         function addWeapon() {
             const char = getActiveChar();
             char.weapons.push({ name: '', attackBonus: 0, damage: '', mastery: 'Nenhuma', notes: '' });
             renderWeapons(char);
-            saveToStorage();
+            saveToStorage(true);
         }
         function updateWeapon(idx, field, val) {
             const char = getActiveChar();
@@ -1950,13 +2745,13 @@
             if (field === 'attackBonus' || field === 'name' || field === 'mastery' || field === 'damage') {
                 renderWeapons(char);
             }
-            saveToStorage();
+            saveToStorage(true);
         }
         function removeWeapon(idx) {
             const char = getActiveChar();
             char.weapons.splice(idx, 1);
             renderWeapons(char);
-            saveToStorage();
+            saveToStorage(true);
         }
 
         function updateSpellSlotTotal(lvl, val) {
@@ -1966,57 +2761,57 @@
             char.spellSlots[lvl].total = total;
             if (char.spellSlots[lvl].used > total) char.spellSlots[lvl].used = total;
             renderSpellSlots(char);
-            saveToStorage();
+            saveToStorage(true);
         }
         function toggleSpellSlotUsed(lvl, slotIdx) {
             const char = getActiveChar();
             const slot = char.spellSlots[lvl];
             slot.used = (slotIdx < slot.used) ? slotIdx : slotIdx + 1;
             renderSpellSlots(char);
-            saveToStorage();
+            saveToStorage(true);
         }
         function addSpell() {
             const char = getActiveChar();
             char.spells.push({ level: 1, name: '', prepared: true, concentration: false, ritual: false, notes: '' });
             renderSpells(char);
-            saveToStorage();
+            saveToStorage(true);
         }
         function updateSpell(idx, field, val) {
             const char = getActiveChar();
             char.spells[idx][field] = val;
             renderSpells(char);
-            saveToStorage();
+            saveToStorage(true);
         }
         function removeSpell(idx) {
             const char = getActiveChar();
             char.spells.splice(idx, 1);
             renderSpells(char);
-            saveToStorage();
+            saveToStorage(true);
         }
 
         function updateAttunement(idx, val) {
             const char = getActiveChar();
             if (!char.attunement) char.attunement = ['', '', ''];
             char.attunement[idx] = val;
-            saveToStorage();
+            saveToStorage(true);
         }
         function addInventoryItem() {
             const char = getActiveChar();
             char.inventory.push({ qty: 1, name: '', weight: 0, notes: '' });
             renderInventoryAndCurrency(char);
-            saveToStorage();
+            saveToStorage(true);
         }
         function updateInventoryItem(idx, field, val) {
             const char = getActiveChar();
             char.inventory[idx][field] = val;
             renderInventoryAndCurrency(char);
-            saveToStorage();
+            saveToStorage(true);
         }
         function removeInventoryItem(idx) {
             const char = getActiveChar();
             char.inventory.splice(idx, 1);
             renderInventoryAndCurrency(char);
-            saveToStorage();
+            saveToStorage(true);
         }
 
         // ============================================================================
@@ -2026,7 +2821,7 @@
             const newChar = createBlankCharacter();
             characters.push(newChar);
             activeCharId = newChar.id;
-            saveToStorage();
+            saveToStorage(false);
             renderAll();
             showToast('Nova ficha em branco criada!', 'success');
         }
@@ -2041,7 +2836,7 @@
                     characters = characters.filter(c => c.id !== char.id);
                     if (characters.length === 0) characters.push(createBlankCharacter());
                     activeCharId = characters[0].id;
-                    saveToStorage();
+                    saveToStorage(false);
                     renderAll();
                     showToast('Ficha excluída.', 'info');
                 }
@@ -2078,7 +2873,7 @@
                     imported.id = 'char_' + Date.now();
                     characters.push(imported);
                     activeCharId = imported.id;
-                    saveToStorage();
+                    saveToStorage(true);
                     renderAll();
                     showToast(`Personagem "${imported.name || 'Importado'}" carregado!`, 'success');
                 } catch (err) {
@@ -2502,6 +3297,7 @@
             loadDriveUrl();
             setupListeners();
             renderAll();
+            initSupabase();
         });
     </script>
 </body>
