@@ -1319,8 +1319,8 @@
         const SUPABASE_URL = 'https://diwavlfcvnkwiwcnbkxb.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_ApQwoRhOTvDGz-ADBm4tfg_ij6-_w1g';
 
-        // Hash SHA-256 da Chave Mestra padrão ("DND-MASTER-2026") para validação sem texto puro
-        const MASTER_CREATION_KEY_HASH = 'f452095f441b66c0038ba998cc3bb0e143f26f99f8484f26b482722fd56f6c47';
+        // Chave Mestra do Sistema para criação de mesas oficiais
+        const MASTER_CREATION_KEY = 'DND-MASTER-2026';
 
         const STORAGE_KEY = 'dnd_5_5_characters_v1';
         const ACTIVE_ID_KEY = 'dnd_5_5_active_char_id_v1';
@@ -1558,8 +1558,9 @@
                 return;
             }
 
-            const keyHash = await sha256(masterKey);
-            if (keyHash !== MASTER_CREATION_KEY_HASH) {
+            const expectedKeyHash = await sha256(MASTER_CREATION_KEY.toUpperCase());
+            const inputKeyHash = await sha256(masterKey.toUpperCase());
+            if (inputKeyHash !== expectedKeyHash) {
                 showToast('Chave Mestra inválida! Apenas o Mestre pode criar mesas.', 'error');
                 return;
             }
